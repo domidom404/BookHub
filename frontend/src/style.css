@@ -1,0 +1,186 @@
+/* -----------------------------------------------------------
+   GLOBAL ROOT + THEME
+----------------------------------------------------------- */
+:root {
+  --color-bg: #080705;
+  --color-primary: #40434E;
+  --color-secondary: #FFFFFA;
+  --color-accent: #702632;
+
+  --text-main: #FFFFFA;
+  --text-dark: #080705;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  --shadow-md: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  --font-main: sans-serif;
+}
+
+/* -----------------------------------------------------------
+   RESET + GLOBAL
+----------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--color-bg);
+  font-family: var(--font-main);
+  color: var(--text-main);
+  height: 100%;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* -----------------------------------------------------------
+   BUTTONS (global utility classes)
+----------------------------------------------------------- */
+.btn {
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem; ;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-primary {
+  padding: 0.5rem 1.5rem;
+  background-color: #4f46e5;
+  color: white;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  opacity: 0.85;
+}
+
+.btn-secondary {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+  opacity: 0.85;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--text-dark);
+  color: var(--text-dark);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* -----------------------------------------------------------
+   LAYOUT HELPERS
+----------------------------------------------------------- */
+
+.container-main {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 1rem;
+}
+
+/* -----------------------------------------------------------
+   TYPOGRAPHY
+----------------------------------------------------------- */
+.title-xl {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.title-lg {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.text-muted {
+  color: #444;
+}
+
+/* -----------------------------------------------------------
+   SIDEBAR SKELETON / STRUCTURE (used by SidebarBH.vue)
+----------------------------------------------------------- */
+
+.sidebar {
+  width: 260px;
+  background: var(--color-secondary);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 2rem 1rem;
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar a {
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.sidebar a:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* -----------------------------------------------------------
+   HEADER SKELETON
+----------------------------------------------------------- */
+.header-container {
+  background: var(--color-primary);
+  color: var(--text-dark);
+  padding: 0.5rem;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+}
+
+/* -----------------------------------------------------------
+   BOOK CARDS (used in Home.vue)
+----------------------------------------------------------- */
+.book-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.book-cover {
+  width: 100%;
+  height: 160px;
+  background: var(--color-secondary);
+  border-radius: var(--radius-sm);
+}
+
+/* ------------------------------------------------------*
