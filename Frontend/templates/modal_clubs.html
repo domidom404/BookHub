@@ -1,0 +1,150 @@
+<style>
+    /* --- CUSTOMIZAÇÃO DO MODAL (DARK FANTASY) --- */
+
+    /* 1. A Caixa do Modal (Fundo Escuro) */
+    .modal-content {
+        background-color: #1e1e24; /* Cinza Escuro do tema */
+        color: #e0e0e0;            /* Texto Claro */
+        border: 1px solid #333;    /* Borda sutil */
+        border-radius: 1rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); /* Sombra dramática */
+    }
+
+    /* 2. Cabeçalho */
+    .modal-header {
+        border-bottom: 1px solid #333;
+    }
+
+    .modal-title {
+        color: #fff;
+        font-weight: bold;
+        font-family: 'DM Sans', 'sans-serif';
+    }
+
+    /* Botão "X" de fechar (Invertido para ficar branco) */
+    .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    /* 3. Corpo do Texto */
+    .modal-body p {
+        margin-bottom: 0.8rem;
+        font-size: 1.05rem;
+        color: #ccc; /* Texto levemente cinza */
+    }
+
+    /* Rótulos (Rating, Genre, Admin...) em Vermelho */
+    .modal-body strong {
+        color: #a41623;
+        font-weight: 700;
+        margin-right: 0.3rem;
+    }
+
+    .div-stars-modal {
+        width: fit-content;
+        font-size: 1.1rem;
+        display: flex;
+        color: #ffc107; /* Estrelas Douradas */
+    }
+
+    /* Linha divisória */
+    hr {
+        border-color: #444;
+        opacity: 0.5;
+    }
+
+    /* 4. BOTÕES (Sobrescrevendo o Bootstrap) */
+
+    /* Transforma o botão VERDE (btn-success) em VERMELHO */
+    .modal-content .btn-success {
+        background-color: #a41623 !important;
+        border-color: #a41623 !important;
+        color: white !important;
+        border-radius: 50px;
+        padding: 0.6rem 2rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        width: 100%; /* Botão largo fica mais bonito no modal */
+    }
+
+    .modal-content .btn-success:hover {
+        background-color: #7a121b !important; /* Vermelho mais escuro */
+        border-color: #7a121b !important;
+        box-shadow: 0 0 15px rgba(164, 22, 35, 0.6);
+        transform: translateY(-2px);
+    }
+
+    /* Botão AMARELO (btn-warning - Admin/Pending) vira um Status Elegante */
+    .modal-content .btn-warning {
+        background-color: transparent !important;
+        border: 2px solid #a41623 !important;
+        color: #a41623 !important;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: default;
+        width: 100%;
+    }
+
+    /* Centralizar conteúdo */
+    .modal-footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-top: none; /* Remove linha do rodapé */
+        padding-bottom: 2rem;
+    }
+</style>
+
+<div class="modal fade" id="clubeModal-{{ clube.id }}" tabindex="-1" aria-labelledby="clubeModalLabel-{{ clube.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clubeModalLabel-{{ clube.id }}">{{ clube.titulo }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" name="fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="div-stars-modal"><strong>Rating:&nbsp;&nbsp;</strong> {% autoescape off %}{{ clube.estrelas_avaliacoes }}{% endautoescape %}</p>
+                <p><strong>Genre:</strong> {{ clube.categoria.nome }}</p>
+                <p><strong>Modality:</strong> {{ clube.modalidade.nome }}</p>
+                <p><strong>Admin:</strong> {{ clube.moderador }}</p>
+                <p><strong>Club Privacy:</strong> {% if clube.privado %}Private{% else %}Public{% endif %}</p>
+                <p><strong>Members:</strong> {{ clube.contar_membros }}</p>
+                <p><strong>Data de Criação:</strong> {{ clube.dataDeCriacao|date:"d/m/Y" }}</p>
+            </div>
+            <hr class="w-100">
+            <div class="d-flex justify-content-center align-items-center mt-3">
+                {% if user.is_authenticated %}
+                    {% if user != clube.moderador %}
+                        {% if clube.privado %}
+                            {% if not clube_context.user_is_member %}
+                                {% if clube_context.user_request_pending %}
+                                    <p class="btn btn-warning text-white text-center">Pending Invitation</p>
+                                {% else %}
+                                    <form method="post" action="{% url 'adicionar-membro' clube.pk %}" class="d-flex justify-content-center my-3">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success text-white py-2 text-center" name="solicitar">Solicitar Associação</button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <p class="btn btn-success text-white text-center">You're a member of this club</p>
+                            {% endif %}
+                        {% else %}
+                            {% if not clube_context.user_is_member %}
+                                <form method="post" action="{% url 'adicionar-membro-publico' clube.pk %}" class="d-flex justify-content-center my-3">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success text-white py-2 text-center" name="entrar-btn">Join Club</button>
+                                </form>
+                            {% else %}
+                                <p class="btn btn-success text-white text-center">You're a member of this club</p>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <p class="btn btn-warning text-white text-center">You're the admin</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,557 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}
+Home Page
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+    /* --- CORES GERAIS --- */
+    :root {
+        --bh-bg: #18191a;        /* Fundo Página */
+        --bh-card: #1e1e24;      /* Fundo Card Comum */
+        --bh-input: #2b2d31;     /* Fundo Inputs */
+        --bh-red: #a41623;       /* Vermelho Principal */
+        --bh-red-hover: #7a121b;
+        --bh-gold: #f2ad00;      /* Dourado Favoritos */
+        --bh-gold-dark: #e18b00;
+        --bh-text: #e0e0e0;
+    }
+
+    body {
+        font-family: 'DM Sans', 'sans-serif';
+        background-color: var(--bh-bg);
+        color: var(--bh-text);
+    }
+
+    h1, h2 {
+        font-family: 'DM Sans', 'sans-serif';
+        color: #fff;
+    }
+
+    h1 {
+        font-size: 4rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Layout Geral */
+    .holder { height: fit-content; }
+    
+    .holder1 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .clubs-container {
+        display: flex;
+        flex-direction: column;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    /* --- BARRA DE PESQUISA E BOTÕES --- */
+    .search-container {
+        display: flex;
+        align-items: center;
+        margin-right: 1rem;
+    }
+
+    .search-input {
+        height: 2.5rem;
+        border-radius: 0.5rem 0 0 0.5rem;
+        border: 1px solid #444;
+        width: 20rem;
+        max-width: 100%;
+        padding: 0 1rem;
+        background-color: var(--bh-input);
+        color: white;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: var(--bh-red);
+    }
+
+    .search-btn {
+        margin-left: -1px;
+        height: 2.5rem;
+        border-radius: 0 0.5rem 0.5rem 0;
+        border: 1px solid var(--bh-red);
+        background-color: transparent;
+        color: var(--bh-red);
+        transition: all 0.3s;
+    }
+
+    .search-btn:hover {
+        background-color: var(--bh-red);
+        color: white;
+    }
+
+    .addclub-btn {
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        background-color: var(--bh-red);
+        border: none;
+        color: white;
+    }
+    
+    .addclub-btn:hover {
+        background-color: var(--bh-red-hover);
+        color: white;
+    }
+
+    /* --- CARDS PADRÃO (Não Favoritos) --- */
+    .super-div {
+        border-radius: 1rem;
+        padding: 1rem;
+        background-color: var(--bh-card); /* Fundo Escuro */
+        border: 1px solid #333;
+        transition: transform 0.2s;
+    }
+
+    .super-div:hover {
+        cursor: pointer;
+        transform: translateY(-2px);
+        border-color: var(--bh-red);
+    }
+
+    .club-title {
+        font-size: 2rem;
+        text-decoration: none;
+        color: var(--bh-red); /* Título Vermelho */
+        font-weight: bold;
+        transition: color 0.3s;
+    }
+    
+    .club-title:hover {
+        color: #ff5252;
+    }
+
+    /* Botão de Estrela (Favoritar) nos cards comuns */
+    .favoritar-btn1 {
+        border: none;
+        background-color: var(--bh-red); /* Vermelho */
+        color: white;
+    }
+    
+    .favoritar-btn1:hover {
+        background-color: var(--bh-red-hover);
+    }
+
+    /* Descrição e Data */
+    .description-div {
+        font-size: 1rem;
+        color: #ccc;
+    }
+
+    .date span.badge {
+        background-color: #333 !important; /* Data Cinza */
+        color: #aaa;
+        border: 1px solid #555;
+    }
+
+    hr {
+        border-color: #555;
+        opacity: 0.5;
+    }
+
+    /* --- SEÇÃO DE FAVORITOS (MANTIDA DOURADA) --- */
+    
+    /* Cabeçalho "Favorites" */
+    .favoritosheader {
+        display: flex;
+        flex-direction: row;
+        background-color: var(--bh-gold); /* Dourado */
+        color: #111;
+        padding: 0.8rem 0.5rem;
+        font-size: 24px;
+        font-weight: bold;
+        border-radius: 1rem;
+        box-shadow: 0 6px 0 var(--bh-gold-dark), 0 6px 15px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: white;
+        width: fit-content;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .favoritosheader:hover {
+        background-color: var(--bh-gold-dark);
+        transform: translateY(2px);
+        box-shadow: 0 4px 0 #925a00, 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Card de Favorito (Mantido Dourado) */
+    #fav-super-div {
+        position: relative;
+        background-color: var(--bh-gold); /* Fundo Dourado */
+        border-width: 0.2rem;
+        border-color: var(--bh-gold-dark);
+        overflow: hidden;
+        box-shadow: 0 6px 0 var(--bh-gold-dark), 0 6px 15px rgba(0, 0, 0, 0.5);
+        color: white;
+    }
+
+    #fav-club-title { color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+    #fav-div-stars { color: #ffffff; }
+    #fav-date { background-color: var(--bh-gold-dark) !important; color: white; border: none; }
+    #fav-description { color: white; font-weight: 500; }
+    #fav-bi-dot { color: white; }
+
+    /* Botão da Estrela dentro do Card Dourado */
+    .fav-favoritar-btn {
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        color: white;
+    }
+    
+    .fav-favoritar-btn:hover {
+        background-color: white;
+        color: var(--bh-gold);
+    }
+
+    /* Collapse Area */
+    #collapseExample {
+        background-color: transparent; /* Transparente para ver o fundo preto */
+        border-radius: 1rem;
+        width: fit-content;
+        margin-top: 1rem;
+    }
+
+    #favoritos-list, .N-favoritos-list {
+        height: fit-content;
+        width: fit-content;
+        border-radius: 1rem;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* --- ESTRUTURA GERAL --- */
+    ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .list-cards {
+        flex-grow: 1;
+        flex-basis: 200;
+        margin-bottom: -1rem;
+    }
+
+    .icons-div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: -1rem; 
+    }
+
+    .container1, .hold-title-icons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .admin-border {
+        border: 2px solid #0d6efd; /* Borda azul para admin (pode manter ou mudar para outra cor de destaque) */
+    }
+
+    .title-date {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .title-date-div {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        width: fit-content;
+    }
+
+    .div-stars {
+        width: fit-content;
+        font-size: 1.4rem;
+        display: flex;
+        color: #ffc107; /* Estrelas amarelas padrão */
+    }
+
+    .holder2 {
+        display: flex;
+        flex-direction: row;
+    }
+
+    /* Efeito de brilho nos favoritos (Mantido) */
+    .favoritosheader::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -150%; width: 200%; height: 100%;
+        background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 70%);
+        transform: skewX(-25deg);
+        opacity: 0;
+        animation: brilho 2s ease-in-out infinite;
+        animation-delay: 2s;
+    }
+
+    @keyframes brilho {
+        0% { left: -150%; opacity: 0; }
+        50% { left: 150%; opacity: 1; }
+        100% { left: 150%; opacity: 0; }
+    }
+
+    /* Responsividade */
+    @media screen and (max-width: 650px) {
+        .title-date-div {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .div-stars {
+            margin-bottom: 1rem;
+            margin-left: -.2rem;
+        }
+        .bi-dot { display: none; }
+        .icons-div { margin-top: -4rem; }
+        .clubs-container, ul {
+            align-items: center;
+            justify-content: center;
+        }
+        ul li { width: 90%; }
+        .holder1, .holder2 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .search-container {
+            width: 90%;
+            justify-content: center;
+            margin-left: 1rem;
+        }
+        .search-input { width: 100%; }
+        .addclub-btn {
+            margin-top: 1rem;
+            width: 90%;
+            justify-content: center;
+        }
+    }
+</style>
+
+
+<div class="container my-5 clubs-container">
+    <div class="holder1">
+        <h1 class="fw-bold">My Clubs</h1>
+        <div class="holder2">
+            <form method="get" class="search-container">
+                <input type="text" name="nome" class="form-control search-input search-bar" placeholder="Search My Clubs" aria-label="Search Clubs" value="{{ request.GET.nome }}">
+                <button class="btn btn-outline-primary search-btn" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+            <a class="btn btn-primary btn-lg addclub-btn" href="{% url 'addClube' %}">Create Club</a>
+        </div>
+    </div>
+
+    <!-- Seção: Clubes Favoritados -->
+    <p class="d-inline-flex gap-1">
+        <h2 class="favoritosheader" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+        aria-controls="collapseExample" id="favoritosheader-btn">
+        <i class="bi bi-star-fill" style="color: white;"></i>Favorites<i class="bi bi-caret-down-fill"
+            id="caret-icon"></i>
+    </h2>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <ul id="favoritos-list">
+            {% if clubes_favoritos.exists %}
+                {% for clube in clubes_favoritos %}
+                <li class="list-cards">
+                    {% if user in clube.favoritos.all %}
+
+                    <div class="super-div {% if user.is_authenticated and user.id == clube.moderador.id %}admin-border{% endif %} shadow" id="fav-super-div">
+                        <div class="hold-title-icons" id="fav-hold-title-icons">
+                            <div class="title-date-div" id="fav-title-date-div">
+                                <a class="club-title" id="fav-club-title" href="#" data-bs-toggle="modal" data-bs-target="#clubeModal-{{ clube.id }}">{{ clube.titulo }}<i class="bi bi-dot" id="fav-bi-dot"></i></a>
+                                <div class="div-stars" id="fav-div-stars">
+                                    &nbsp;{% autoescape off %}{{ clube.estrelas_avaliacoes }}{% endautoescape %}
+                                </div>
+                            </div>
+                            <div class="icons-div" id="fav-icons-div">
+                                <button id="favoritar-btn-{{ clube.id }}" class="btn fav-favoritar-btn" data-clube-id="{{ clube.id }}" name="desfavoritar-btn">
+                                    {% if user in clube.favoritos.all %}
+                                        <i class="bi bi-star-fill star-from-btn"></i>
+                                    {% else %}
+                                        <i class="bi bi-star star-from-btn"></i>
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </div>
+    
+                        <div class="description-div display-6">
+                            <p class="date"><span class="badge date"  id="fav-date">Since {{ clube.dataDeCriacao|date:"d/m/Y" }}</span></p>
+                            <hr>
+                            <p class="description text-break" id="fav-description">{{ clube.descricao|cortar_texto:100|safe }}</p> 
+                        </div>
+                    </div>
+
+                    {% else %}
+
+                    <div class="super-div {% if user.is_authenticated and user.id == clube.moderador.id %}admin-border{% endif %} shadow">
+                        <div class="hold-title-icons">
+                            <div class="title-date-div">
+                                <a class="club-title" name="club-title" href="#" data-bs-toggle="modal" data-bs-target="#clubeModal-{{ clube.id }}">{{ clube.titulo }}<i class="bi bi-dot"></i></a>
+                                <div class="div-stars">
+                                    &nbsp;{% autoescape off %}{{ clube.estrelas_avaliacoes }}{% endautoescape %}
+                                </div>
+                            </div>
+                            <div class="icons-div">
+                                <button id="favoritar-btn-{{ clube.id }}" class="btn btn-primary favoritar-btn1" data-clube-id="{{ clube.id }}" name="favoritar-btn">
+                                    {% if user in clube.favoritos.all %}
+                                        <i class="bi bi-star-fill star-from-btn"></i>
+                                    {% else %}
+                                        <i class="bi bi-star star-from-btn"></i>
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </div>
+    
+                        <div class="description-div display-6">
+                            <p class="date"><span class="badge text-bg-primary date">Since {{ clube.dataDeCriacao|date:"d/m/Y" }}</span></p>
+                            <hr>
+                            <p class="description text-break">{{ clube.descricao|cortar_texto:100|safe }}</p> 
+                        </div>
+                    </div>
+
+                    {% endif %}
+                    {% include 'modal_myclubs.html' %}
+                </li>
+                {% endfor %}
+            {% else %}
+                <p style="color: rgb(0, 0, 0); margin: 0;">You have no favourite clubs...</p>
+            {% endif %}
+        </ul>
+    </div>
+    <!-- FIM -->
+    
+    <!-- Seção: Clubes Não Favoritados -->
+    <br>
+    <h2 class="fw-bold" style="color: var(--bs-body-color);">All clubs</h2>
+    <div class="N-favoritos-list">
+        <ul id="nao-favoritos-list">
+            {% if object_list.exists %}
+                {% for clube in object_list %}
+                <li class="list-cards">
+                    <div class="super-div {% if user.is_authenticated and user.id == clube.moderador.id %}admin-border{% endif %} shadow">
+                        <div class="hold-title-icons">
+                            <div class="title-date-div">
+                                <a class="club-title" id="tituloCard" href="#" data-bs-toggle="modal" data-bs-target="#clubeModal-{{ clube.id }}">{{ clube.titulo }}<i class="bi bi-dot"></i></a>
+                                <div class="div-stars">
+                                    &nbsp;{% autoescape off %}{{ clube.estrelas_avaliacoes }}{% endautoescape %}
+                                </div>
+                            </div>
+                            
+                            <div class="icons-div">
+                                <button id="favoritar-btn-{{ clube.id }}" class="btn btn-primary favoritar-btn1" data-clube-id="{{ clube.id }}" name="favoritar-btn">
+                                        {% if user in clube.favoritos.all %}
+                                            <i class="bi bi-star-fill star-from-btn"></i>
+                                        {% else %}
+                                            <i class="bi bi-star star-from-btn"></i>
+                                        {% endif %}
+                                </button>
+                            </div>
+                        </div>
+    
+                        <div class="description-div display-6">
+                            <p class="date"><span class="badge text-bg-primary date">Since {{ clube.dataDeCriacao|date:"d/m/Y" }}</span></p>
+                            <hr>
+                            <p class="description text-break">{{ clube.descricao|cortar_texto:100|safe }}</p> 
+                        </div>
+                    </div>
+                    {% include 'modal_myclubs.html' %}
+                </li>
+                {% endfor %}
+            {% else %}
+                {% if request.GET.nome %}
+                    <p id="no-clubs-message">No clubs found with this name.</p>
+                {% else %}
+                    <p id="no-clubs-message" style="color: var(--bs-body-color);">Uau, todos os Clubes favoritados! Parabéns, meu jovem, você conseguiu trocar seis por meia dúzia 👏👏👏</p>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+    
+    <!-- FIM -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    if (localStorage.getItem('favoritosAberto') === 'true') {
+        var collapseElement = document.getElementById('collapseExample');
+        var bootstrapCollapse = new bootstrap.Collapse(collapseElement, {
+            toggle: true
+        });
+        document.querySelector('h2.favoritosheader').setAttribute('aria-expanded', 'true');
+
+        setTimeout(() => {
+            localStorage.removeItem('favoritosAberto');
+        }, 1000);
+    }
+
+    document.querySelectorAll('[id^="favoritar-btn-"]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var clubeId = this.getAttribute('data-clube-id');
+            var url = `/clube/favoritar/${clubeId}/`;
+
+            var favoritosAberto = document.querySelector('h2.favoritosheader').getAttribute('aria-expanded') === 'true';
+            localStorage.setItem('favoritosAberto', favoritosAberto);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.location.reload();
+            });
+        });
+    });
+});
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const modalId = urlParams.get('modal');
+    
+    if (modalId) {
+        const modalSelector = `#${modalId}`;
+        const modalElement = document.querySelector(modalSelector);
+        
+        if (modalElement) {
+            $(modalSelector).modal('show');
+        } else {
+            console.error('Modal não encontrado:', modalSelector);
+        }
+    }
+};
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Nova Categoria - BookHub
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    /* Deixa os inputs (caixas de texto) escuras com texto claro */
+    input[type="text"], input[type="email"], textarea, select {
+        background-color: #2b2d31 !important; /* Cinza escuro */
+        color: #e0e0e0 !important; /* Texto claro */
+        border: 1px solid #444 !important; /* Borda discreta */
+        padding: 10px;
+        border-radius: 8px;
+        width: 100%; /* Ocupa a largura toda */
+        margin-bottom: 10px;
+    }
+
+    /* Quando clica no campo, a borda brilha vermelho */
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: #a41623 !important;
+        box-shadow: 0 0 5px rgba(164, 22, 35, 0.5);
+    }
+
+    /* Esconde aquelas etiquetas "help text" feias do Django se houver */
+    .helptext {
+        font-size: 0.8em;
+        color: #888;
+    }
+    
+    label {
+        font-weight: bold;
+        color: #ff5252; /* Rótulos em vermelho claro */
+        margin-top: 10px;
+    }
+</style>
+
+    {% if user.is_authenticated %}
+        <br>
+        <h1 class="text-center" style="font-weight: bold;">Adicionar Nova Categoria</h1>
+        <p class="text-center text-muted">Crie um novo tópico para a comunidade</p>
+        <br>
+       
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card p-4" style="background-color: #1e1e24; border: 1px solid #333;">
+                        <div class="form-group">
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <br>
+                                <button class="btn btn-primary btn-lg w-100">Criar Categoria</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="container text-center mt-5">
+            <div class="alert alert-danger" role="alert" style="background-color: #a41623; color: white; border: none;">
+                <h3>🚫 Acesso Restrito</h3>
+                <p>Você precisa estar logado para criar categorias.</p>
+                <a href="{% url 'login' %}" class="btn btn-light mt-2" style="color: #a41623; font-weight: bold;">Fazer Login</a>
+            </div>
+        </div>
+    {% endif %} 
+
+{% endblock %}

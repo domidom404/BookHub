@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* --- CONFIGURAÇÕES GERAIS (DARK MODE) --- */
+* {
+    font-family: 'DM Sans', 'sans-serif';
+}
+
+/* Força o fundo escuro na página inteira */
+body {
+    background-color: #18181d !important; /* Cor de fundo das suas prints */
+    color: #e0e0e0 !important;
+}
+
+/* --- TEXTOS E TÍTULOS --- */
+h1, h2, h3, h4, h5, p, span {
+    color: #e0e0e0 !important;
+}
+
+/* Destaque para palavras em negrito (BookHub) */
+strong {
+    color: #ff5252; /* Um vermelho claro para destacar */
+}
+
+h1 {
+    font-weight: bold;
+    font-size: 4rem;
+    max-width: 95%;
+    text-shadow: 2px 2px 4px #000000; /* Sombra para leitura */
+}
+
+/* --- LAYOUT --- */
+.superdiv {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: left;
+    align-items: center;
+    max-width: 95%;
+}
+
+.textbox-1 {
+    text-align: left;
+    min-width: 50%;
+    max-width: 95%;
+    display: flex;
+    flex-direction: column;
+    background-color: #2b2d31; /* Fundo cinza do bloco de texto */
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #444; /* Borda sutil */
+}
+
+/* --- CARTÕES DA EQUIPE (TEAM MEMBERS) --- */
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.team-member {
+    background-color: #242526; /* Fundo do cartão escuro */
+    padding: 20px;
+    border-radius: 15px;
+    /* Sombra escura em vez de clara */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
+    border: 1px solid #3a3b3c;
+    width: calc(33.33% - 40px);
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid #a41623; /* Borda vermelha na foto */
+}
+
+/* Animação de Hover (Agora brilha VERMELHO/VINHO) */
+.team-member:hover {
+    animation: crimson-glow 0.5s forwards;
+    cursor: pointer;
+}
+
+@keyframes crimson-glow {
+    0% {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+    100% {
+        /* Brilho vermelho igual ao tema BookHub */
+        box-shadow: 0 0 20px rgba(164, 22, 35, 0.8); 
+        transform: scale(1.05);
+        border-color: #a41623;
+    }
+}
+
+/* --- LINKS SOCIAIS --- */
+.social-links a {
+    text-decoration: none;
+    color: #a0a0a0 !important; /* Ícones cinza claro */
+    font-size: 1.2em;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+.social-links a:hover {
+    color: #ff5252 !important; /* Ficam vermelhos ao passar o mouse */
+}
+
+/* --- AJUSTES RESPONSIVOS (CELULAR) --- */
+@media (max-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    .textbox-1 { min-width: 100%; }
+    .team-member { width: 100%; margin-bottom: 20px; }
+    .superdiv { flex-direction: column; align-items: center; }
+}
+
+/* --- SOBRESCREVENDO O HEADER (Se possível) --- */
+/* Isso tenta forçar o menu a ficar escuro mesmo se estiver no base.html */
+nav, .navbar {
+    background-color: #18191a !important;
+    border-bottom: 1px solid #333;
+}
+.nav-link, .navbar-brand {
+    color: #e0e0e0 !important;
+}
+
+/* --- OVERRIDE: ACABANDO COM O AZUL DO BOOTSTRAP --- */
+
+/* 1. Botão Sólido (Provavelmente o "New Club/Novo Clube") */
+.btn-primary {
+    background-color: #a41623 !important; /* Vermelho Vinho */
+    border-color: #a41623 !important;
+}
+
+/* Quando passa o mouse no botão sólido */
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+    background-color: #7a121b !important; /* Vermelho mais escuro */
+    border-color: #7a121b !important;
+    box-shadow: 0 0 10px rgba(164, 22, 35, 0.5) !important; /* Brilho vermelho */
+}
+
+/* 2. Botão de Borda (Provavelmente a Lupa de Pesquisa) */
+.btn-outline-primary {
+    color: #a41623 !important; /* Texto/Ícone vermelho */
+    border-color: #a41623 !important; /* Borda vermelha */
+}
+
+/* Quando passa o mouse na lupa */
+.btn-outline-primary:hover, .btn-outline-primary:active {
+    background-color: #a41623 !important; /* Fundo vira vermelho */
+    color: #ffffff !important; /* Ícone vira branco */
+    border-color: #a41623 !important;
+}
+
+/* 3. Links de texto soltos (que costumam ser azuis) */
+a {
+    color: #ff5252; /* Vermelho claro para links */
+    text-decoration: none;
+}
+a:hover {
+    color: #ff8a80; /* Mais claro ainda ao passar o mouse */
+    text-decoration: underline;
+}
+
+</style>
+
+<div class="container mt-5 superdiv">
+
+    <div class="textbox-1">
+        <h1>Nosso Propósito</h1> <strong></strong>
+        <br>
+        <h5> O <strong>Bookhub</strong> é um projeto desenvolvido para a disciplina de Desenvolvimento Web do curso de Sistemas
+            de Informação da Unimontes. A plataforma foi idealizada para <strong>promover a interação entre leitores, permitindo a criação de grupos de leitura, clubes
+            privados e públicos, e bate-papos sobre livros.</strong> O projeto foca em facilitar o compartilhamento de experiências literárias e incentivar
+            a leitura colaborativa, proporcionando uma interface intuitiva onde os usuários podem organizar suas leituras, debater sobre capítulos
+            específicos e criar conexões com outros membros da comunidade.
+            </h5>
+        <br>
+        <hr>
+        <br>
+        <h1>Nosso Time</h1>
+        
+    <div class="team-container">
+        
+        <div class="team-member">
+            <img src="{% static 'images/daniel-corredor2.jpg' %}" alt="Membro 6">
+            <h3>Daniel</h3>
+            <div class="social-links">
+                <a href="" target="_blank"><i class="bi bi-linkedin"></i>  LinkedIn</a>
+                <a href="" target="_blank"><i class="bi bi-github"></i>  GitHub</a><br>
+                <a>📩 diasdanielmoc13@gmail.com</a>
+            </div>
+        </div>
+        <div class="team-member">
+            <img src="{% static 'images/dominique.jpg' %}" alt="Membro 1">
+            <h3>Dominique</h3>
+            <div class="social-links">
+                <a href="" target="_blank"><i class="bi bi-linkedin"></i>  LinkedIn</a>
+                <a href="" target="_blank"><i class="bi bi-github"></i>  GitHub</a><br>
+                <a>📩 dominicoliveira.404@gmail.com</a>
+            </div>
+        </div>
+    </div> 
+</div>
+
+<hr>
+
+</div>
+
+{% endblock %}

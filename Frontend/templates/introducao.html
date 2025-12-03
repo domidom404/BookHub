@@ -1,0 +1,260 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHeaded - Conectando Amantes da Leitura</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background-color: #1c2256;
+            color: #fff;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+        }
+
+        nav {
+            margin-top: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #3a3f44;
+            font-size: 1.2em;
+            margin: 0 15px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #3a3f44;
+            color: #fff;
+        }
+
+        section {
+            width: 80%;
+            max-width: 1200px;
+            background-color: #fff;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        section h2 {
+            font-size: 2.5em;
+            color: #3a3f44;
+            margin-bottom: 20px;
+        }
+
+        section p {
+            font-size: 1.2em;
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .feature {
+            flex: 1;
+            margin: 15px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .feature:hover {
+            transform: scale(1.05);
+        }
+
+        .feature img {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .feature h3 {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .feature p {
+            color: #555;
+            font-size: 1em;
+        }
+
+        .cta-button {
+            background-color: #3a3f44;
+            color: #fff;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #666;
+        }
+
+        footer {
+            background-color: #1c2256;
+            color: #fff;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+        }
+
+        p{
+            background-color: rgb(253, 253, 253);
+            display: flex;
+            justify-content: left;
+        }
+
+        video {
+            float: right;
+            margin-right: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <style>
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 1.2em;
+            color: #333;
+            padding: 10px 20px;
+            background-color: #0000;
+            color: #1c2256;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: fit-content;
+        }
+
+        .back-button:hover {
+            background-color: #0000;
+        }
+
+        .back-button img {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .textdiv{
+            background-color: rgb(252, 253, 252);
+            align-items: left;
+            justify-content: left;
+            display: flex;
+            padding: 0rem;
+        }
+
+        ol li {
+            background-color: rgb(252, 253, 252);
+            justify-content: left;
+            margin: 0rem;
+        }
+
+
+    </style>
+        <a href="javascript:history.back()" class="back-button">
+            <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="Voltar">
+            Voltar
+        </a>
+    <h1> Bem-vindo ao BookHeaded</h1>
+</header>
+
+<section>
+    <h2>8 razões para participar de um clube de leitura</h2>
+ 
+    <div class="textdiv">
+        <ol>
+            <li class="text-break">Ler é prazeroso, mas solitário. Acabamos um livro e ficamos procurando alguém que também o tenha lido.<br> Não precisa mais procurar: essas pessoas estão lá, no clube de leitura.</li><br>
+            <li class="text-break">Você descobre que nem todo mundo lê ou leu aquele livro como você. Ganhar outros pontos de vista é sempre um presente.</li><br>
+            <li class="text-break">Você conhece pessoas muito legais. No mínimo, pessoas que gostam de ler como você, o que já é uma alegria.</li><br>
+            <li class="text-break">Você descobre excelentes livros e escritores que talvez não descobrisse sozinho.</li><br>
+            <li class="text-break">Você pode expor tudo o que pensou e sentiu ao ler o livro sem se preocupar em estar certo ou errado.<br> É liberdade. E respeito. O clube de leitura é, antes de tudo, um espaço de escuta.</li><br>
+            <li class="text-break">Você recebe dicas de outros livros e outros escritores, pois estará rodeado de pessoas apaixonadas por arte e cultura.</li><br>
+            <li class="text-break">É leve e profundo. Dolorido e divertido. Trágico e engraçado. Simples e complexo.</li><br>
+            <li class="text-break">Você sai maior do que entrou. E isso não é pouco.</li><br>
+            
+        </ol>
+        <iframe width="400" height="410" 
+        src="https://www.youtube.com/embed/Xwfrvsxc6do" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+</iframe>
+    </div>
+    
+    
+    <p>Descubra novos horizontes literários e faça conexões profundas com outros leitores. Junte-se a nós e mergulhe em um mundo de histórias, trocas de experiências e amizade através da leitura!</p>
+
+    <div class="features">
+        <div class="feature">
+            <a href="{% url 'clubs' %}">
+                <img src="{% static 'images/clube.jpg' %}" alt="Clube de Leitura">
+            </a>
+            <h3>Clube de Leitura</h3>
+            <p>Participe de clubes de leitura com pessoas de todo o mundo e discuta suas obras favoritas em tempo real.</p>
+        </div>
+        <div class="feature">
+            <a href="{% url 'pagina_principal' %}">
+            <img src="{% static 'images/livro.jpg' %}" alt="Descubra Livros">
+            </a>
+            <h3>Descubra Livros</h3>
+            <p>Encontre recomendações de livros baseadas nos seus gostos e descubra novos autores e gêneros.</p>
+        </div>
+        <div class="feature">
+            <a href="{% url 'myclubes' %}">
+                <img src="{% static 'images/conectar.jpg' %}" alt="Conecte-se">
+            </a>
+            <h3>Conecte-se com Leitores</h3>
+            <p>Crie conexões com outros leitores que compartilham do seu amor pela leitura e troque recomendações e insights.</p>
+        </div>
+    </div>
+<a href="{%  url 'register' %}">
+    <button class="cta-button">Junte-se à Comunidade</button>
+</a>
+
+</section>
+
+<footer>
+    <p>© 2024 BookHeaded - Conectando Amantes da Leitura</p>
+</footer>
+
+</body>
+</html>

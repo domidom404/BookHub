@@ -1,0 +1,558 @@
+{% extends 'base3.html' %}
+
+{% block title %}
+Criando
+{% endblock title %}
+
+{% block content %}
+
+{% load static %}
+
+<style>
+    body {
+        font-family: 'DM Sans', 'sans-serif';
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #18191A;
+        color: white;
+    }
+
+    .superholder {
+        display: flex;
+        align-items: center;
+        height: 90%;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .h1 {
+        color: #A51622;
+    }
+
+    .holder1 {
+        display: flex;
+        flex-direction: row;
+        width: 60rem;
+        height: 90%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 2rem;
+        overflow: hidden;
+        align-items: center;
+        width: fit-content;
+    }
+
+    .holder2 {
+        background-color: #A51622;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        border-radius: 1.5rem;
+        margin-right: 1.5rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+    #descricao{
+        overflow-y: scroll;
+        overflow-x: hidden;
+        resize: none;
+    }
+
+    .emo {
+        margin-top: 13rem;
+        height: 25rem;
+        position: relative;
+        z-index: 99;
+        animation: subtle-elastic-distort 2s infinite;
+    }
+
+    .velho {
+        position: absolute;
+        z-index: 1;
+        height: 12rem;
+        margin-top: 13rem;
+        transition: transform 0.3s ease, height 0.3s ease;
+    }
+
+
+    .velho.dragging {
+        transition: transform 0.3s ease;
+        transform: translate(-9rem, -6rem) rotate(-30deg);
+        height: 22rem;
+    }
+
+    .menina {
+        position: absolute;
+        z-index: 2;
+        height: 12rem;
+        margin-top: 10rem;
+        transition: transform 0.3s ease, height 0.3s ease;
+    }
+
+    .menina.dragging {
+        transition: transform 0.3s ease;
+        transform: translate(6rem, -6rem) rotate(30deg);
+        height: 22rem;
+    }
+
+    .cabelao {
+        position: absolute;
+        z-index: 3;
+        height: 4rem;
+        margin-top: 5rem;
+        transition: transform 0.3s ease, height 0.3s ease;
+    }
+
+    .cabelao.dragging {
+        transition: transform 0.3s ease;
+        transform: translate(6rem, -6rem);
+        height: 22rem;
+    }
+
+    .mlkderoxo {
+        position: absolute;
+        z-index: 0;
+        height: 10rem;
+        margin-top: 10rem;
+        transition: transform 0.3s ease, height 0.3s ease;
+    }
+
+    .mlkderoxo.dragging {
+        transition: transform 0.3s ease;
+        transform: translate(0rem, -8rem);
+        height: 19rem;
+    }
+
+    .tranca {
+        position: absolute;
+        height: 12rem;
+        margin-top: 45.2rem;
+        margin-left: 12rem;
+        transition: transform 0.3s ease, height 0.3s ease;
+        z-index: 100;
+    }
+
+    .tranca.dragging {
+        transition: transform 0.3s ease;
+        transform: translate(0rem, -10rem);
+    }
+
+    .reading-club {
+        font-size: 3rem;
+        margin-top: -.5rem;
+        line-height: 1.2;
+    }
+
+    .form-group {
+        background-color: #18191A;
+        color: white;
+        padding: 1rem;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        padding: .5rem;
+    }
+
+    .form-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 1rem;
+        width: 100rem;
+    }
+
+    .form-row label,
+    .form-row input,
+    .form-row select {
+        width: 48%;
+    }
+
+    label {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .mod-cat {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .mod-cat-title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+    }
+
+    .form-check label {
+        margin-left: 0.5rem;
+    }
+
+    #descricao {
+        height: 7rem;
+    }
+
+    #create-club-form {
+        width: 45rem;
+    }
+
+    .create-btn {
+        margin-top: 1rem;
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #A51622;
+        color: white;
+        font-size: 1.25rem;
+        border: none;
+        border-radius: 5rem;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .create-btn:disabled {
+        background-color: #ccc;
+    }
+
+    .create-btn:hover:enabled {
+        background-color: #A51622;
+    }
+
+    @keyframes subtle-elastic-distort {
+
+        0%,
+        100% {
+            transform: translateY(0) scale(1);
+        }
+
+        30% {
+            transform: translateY(-1px) scale(1.01, 0.99);
+        }
+
+        50% {
+            transform: translateY(-2px) scale(0.99, 1.01);
+        }
+
+        70% {
+            transform: translateY(-1px) scale(1.01, 0.99);
+        }
+    }
+
+    @media (max-width: 767px) {
+
+        .h1{
+            font-size: 2rem;
+        }
+
+        .holder1 {
+            flex-direction: column;
+            height: fit-content;
+            width: auto;
+        }
+
+        .holder2 {
+            display: none;
+        }
+
+        .form-group {
+            width: 100%;
+        }
+
+        .superholder {
+            margin-top: -4rem;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px){
+        .holder2{
+            height: 32rem;
+        }
+
+        .form-group{
+            height: fit-content;
+        }
+
+        .holder1{
+            height: fit-content;
+        }
+    }
+
+    @media (min-width: 1024px) and (max-width: 1279px){
+        .holder2{
+            height: 32rem;
+        }
+
+        .form-group{
+            height: fit-content;
+        }
+
+        .holder1{
+            height: fit-content;
+        }
+    }
+
+    @media (min-width: 1280px){
+        
+        .holder2{
+            height: 32rem;
+        }
+
+        .form-group{
+            height: fit-content;
+        }
+
+        .holder1{
+            height: fit-content;
+        }
+
+    }
+
+    @keyframes gradienteAnimado {
+        0% {
+        background-position: 0% 50%;
+        }
+        100% {
+            background-position: 100% 50%;
+        }
+    }
+
+    @keyframes entrada {
+        0% {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .carlos {
+        position: absolute;
+        z-index: 1;
+        height: 12rem;
+        margin-top: 13rem;
+    }
+
+    .carlos.dragging {
+        transition: transform 0.3s ease;
+        transform: translate(9rem, 0rem);
+        height: 22rem;
+    }
+
+    .mateus {
+        position: absolute;
+        z-index: 1;
+        height: 12rem;
+        margin-top: 13rem;
+    }
+
+    .mateus.dragging {
+        transition: transform 0.3s ease;
+        transform: translate(10rem, 0rem);
+        height: 22rem;
+    }
+
+    .hidden {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+</style>
+
+
+{% if user.is_authenticated %}
+
+<div class="container superholder">
+    <div class="holder1">
+        <div class="form-group shadow-lg">
+            <div class="holder2">
+                <img src="{% static 'images/emo.svg' %}" class="emo" alt="Imagem do avatar">
+                <img src="{% static 'images/velho.svg' %}" class="velho" alt="Imagem do avatar">
+                <img src="{% static 'images/casaco-menina.svg' %}" class="menina" alt="Imagem do avatar">
+                <img src="{% static 'images/tranca.svg' %}" class="tranca" alt="Imagem do avatar">
+                <img src="{% static 'images/mlkderoxo.svg' %}" class="mlkderoxo" alt="Imagem do avatar">
+                <img src="{% static 'images/carlos.svg' %}" class="carlos" alt="Imagem do avatar">
+                <img src="{% static 'images/mateus.svg' %}" class="mateus" alt="Imagem do avatar">
+            </div>
+            <form method="post" id="create-club-form">
+                <h1 class="text-start">Crie o seu novo <p class="h1 fw-bold reading-club">Clube de Leitura</p>
+                </h1>
+                {% csrf_token %}
+                <label for="titulo">Título:</label>
+                <input type="text" name="titulo" id="titulo" class="form-control" required>
+                <div class="mod-cat-title">
+                    <label for="modalidade">Modalidade:</label>
+                    <label for="categoria">Gênero:</label>
+                </div>
+                <div class="mod-cat">
+                    <select name="modalidade" id="modalidade" class="form-control" required>
+                        <option value="">Selecione uma Modalidade</option>
+                        {% for modalidade in modalidades %}
+                        <option value="{{ modalidade.id }}" class="form-control" name="modalidade">{{ modalidade.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="categoria" id="categoria" class="form-control" required>
+                        <option value="">Select a genre</option>
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}" class="form-control" name="categoria">{{ categoria.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label for="descricao">Descrição:</label>
+                <textarea name="descricao" id="descricao" class="form-control" required></textarea>
+
+                <div class="form-check">
+                    <input type="checkbox" name="privado" id="privado">
+                    <label for="privado">Privado</label>
+                </div>
+
+                <input type="hidden" id="moderador" name="moderador">
+
+                <button class="create-btn" id="create-btn" disabled>Criar Clube</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateField(field) {
+        const value = field.value.trim();
+        if (field.type === "checkbox") {
+            return true;
+        }
+        return value !== '';
+    }
+
+    function validateForm() {
+        const form = document.getElementById("create-club-form");
+        const fields = form.querySelectorAll("input, textarea, select");
+        let allValid = true;
+
+        fields.forEach(field => {
+            if (!(field.type === "checkbox" && field.id === "privado")) {
+                if (!validateField(field)) {
+                    allValid = false;
+                }
+            }
+        });
+
+        return allValid;
+    }
+
+    function toggleSubmitButton() {
+        const button = document.getElementById("create-btn");
+        if (validateForm()) {
+            button.removeAttribute("disabled");
+        } else {
+            button.setAttribute("disabled", "true");
+        }
+    }
+
+    document.querySelectorAll("input, textarea, select").forEach(input => {
+        input.addEventListener("input", toggleSubmitButton);
+        if (input.type === "checkbox") {
+            input.addEventListener("change", toggleSubmitButton);
+        }
+    });
+
+    var name = "{{ user.id }}";
+    document.getElementById("moderador").value = name;
+
+
+
+    document.getElementById("titulo").addEventListener("input", function () {
+        const velho = document.querySelector(".velho");
+
+        if (this.value.trim() !== "") {
+            velho.classList.add("dragging");
+        } else {
+            velho.classList.remove("dragging");
+        }
+    });
+
+    document.getElementById("modalidade").addEventListener("change", function () {
+        const menina = document.querySelector(".menina");
+        const selectedValue = this.value.trim();
+
+        if (selectedValue === "1" || selectedValue === "2" || selectedValue === "3") {
+            menina.classList.add("dragging");
+        } else {
+            menina.classList.remove("dragging");
+        }
+    });
+
+    document.getElementById("categoria").addEventListener("change", function () {
+        const mlkderoxo = document.querySelector(".mlkderoxo");
+        const selectedValue = this.value.trim();
+        console.log("Selected Value:", selectedValue);
+        if (selectedValue == "1" || selectedValue == "2" || selectedValue == "3" || selectedValue == "4" || selectedValue == "5" ||
+        selectedValue == "6" || selectedValue == "7" || selectedValue == "8" || selectedValue == "9" || selectedValue == "10" ||
+        selectedValue == "11")  {
+            mlkderoxo.classList.add("dragging");
+            console.log("Adding dragging class to cabelao");
+        } else {
+            mlkderoxo.classList.remove("dragging");
+            console.log("Removing dragging class from cabelao");
+        }
+    });
+
+    document.getElementById("descricao").addEventListener("input", function () {
+        const carlos = document.querySelector(".carlos");
+        const mateus = document.querySelector(".mateus");
+
+        if (this.value.trim() == "carlos") {
+            carlos.classList.add("dragging");
+        } else if (this.value.trim() !== "carlos"){
+            carlos.classList.remove("dragging");
+        }
+
+        if (this.value.trim() == "mateus") {
+
+            mateus.classList.add("dragging");
+        } else {
+            mateus.classList.remove("dragging");
+        }
+    });
+
+    document.getElementById("privado").addEventListener("change", function () {
+        const tranca = document.querySelector(".tranca");
+        if (this.checked) {
+            tranca.classList.add("dragging");
+        } else {
+            tranca.classList.remove("dragging");
+        }
+    });
+
+</script>
+
+{% else %}
+Você não tem permissão para criar um Clube
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends 'base2.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+  /* --- VARIÁVEIS DO TEMA BOOKHUB --- */
+  :root {
+    --bookhub-bg: #18191a;
+    --bookhub-card: #1e1e24;
+    --bookhub-red: #a41623;
+    --bookhub-text: #e0e0e0;
+    --bookhub-input: #2b2d31;
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--bookhub-bg);
+    color: var(--bookhub-text);
+  }
+
+  .centered-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    z-index: 1;
+  }
+
+  /* O Cartão de Login */
+  .row {
+    background-color: var(--bookhub-card);
+    color: var(--bookhub-text);
+    width: fit-content;
+    max-width: 100%;
+    max-height: auto;
+    margin: 0;
+    border-style: solid;
+    border-color: #333; /* Borda sutil escura */
+    border-width: 1px;
+    border-radius: 1rem;
+    padding: 3rem;
+    padding-bottom: 2rem;
+    z-index: 99;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Sombra mais forte */
+  }
+
+  .login-items-holder {
+    height: fit-content;
+    width: fit-content;
+    max-width: fit-content;
+    max-height: fit-content;
+  }
+
+  /* Inputs estilizados (Dark Mode) */
+  .user-passwd {
+    height: 3rem;
+    background-color: var(--bookhub-input) !important;
+    border: 1px solid #444;
+    color: white !important;
+    border-radius: 8px;
+  }
+  
+  .user-passwd:focus {
+    background-color: var(--bookhub-input) !important;
+    border-color: var(--bookhub-red);
+    box-shadow: 0 0 5px rgba(164, 22, 35, 0.5);
+    color: white !important;
+    outline: none;
+  }
+
+  /* Remove fundo branco do autocomplete do navegador */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active{
+      -webkit-box-shadow: 0 0 0 30px var(--bookhub-input) inset !important;
+      -webkit-text-fill-color: white !important;
+  }
+
+  /* Botão Vermelho */
+  .login-btn {
+    height: 100%;
+    width: 100%;
+    min-height: 100%;
+    min-width: 100%;
+    border-radius: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'DM Sans', 'sans-serif';
+    color: white;
+    background-color: var(--bookhub-red); /* Vermelho */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  .login-btn:hover:enabled {
+    background-color: #7a121b; /* Vermelho escuro */
+    transform: scale(1.02);
+  }
+
+  .login-btn:disabled {
+    background-color: #444; /* Cinza */
+    color: #888;
+    cursor: not-allowed;
+  }
+
+  p,
+  .user-passwd {
+    font-family: 'DM Sans', 'sans-serif';
+  }
+
+  /* Link de cadastro */
+  .not-registered {
+    margin-top: 2rem;
+    color: #aaa;
+  }
+  
+  /* Link "Sign Up" em vermelho */
+  .link-primary {
+    color: var(--bookhub-red) !important;
+    text-decoration: none;
+  }
+  .link-primary:hover {
+    color: #ff5252 !important;
+    text-decoration: underline;
+  }
+
+  .logo-image{
+    padding: 2rem;
+    display: flex;
+    z-index: 999;
+    max-width: 30rem;
+    max-height: auto;
+    width: 15rem;
+    height: auto;
+    position: absolute;
+  }
+
+  .login-drawing{
+    position: relative;
+    display: flex;
+    margin-left: 2rem;
+  }
+
+  .vertical-line{
+        display: inline-block;
+        border-left: 2px solid var(--bookhub-red); /* Linha vermelha */
+        margin: 0 10px;
+        height: 20rem;
+        position: absolute;
+        z-index: 1000;
+        margin-left: 5rem;
+        opacity: 0.5;
+  }
+
+  @media screen and (max-width: 920px) {
+    .login-drawing, .vertical-line{
+      display: none;
+    }
+  }
+</style>
+
+<a href="{% url 'pagina_principal' %}">
+  <img src="{% static 'images/bookhublogo.png' %}" class="logo-image">
+</a>
+
+<div class="container-fluid centered-container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 login-items-holder">
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <p class="text-start display-5 fw-bold login-text">Welcome back</p>
+          <p class="text-start user-text">Get into the perfect place for bookheads just like you.
+          </p>
+          <input type="text" class="form-control p-3 user-passwd" id="username" name="username" placeholder="username">
+        </div>
+        <div class="mb-3">
+          <input type="password" class="form-control p-3 user-passwd" id="password" name="password" placeholder="password">
+        </div>
+        <button type="submit" class="btn btn-primary login-btn" name="loginB" id="loginBtn" disabled>Login</button>
+        <p class="not-registered">Not registered yet? <a href="{% url 'register' %}"
+            class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Sign Up</a></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const loginBtn = document.getElementById('loginBtn');
+
+  function toggleButtonState() {
+    if (usernameInput.value.trim() !== "" && passwordInput.value.trim() !== "") {
+      loginBtn.disabled = false;
+    } else {
+      loginBtn.disabled = true;
+    }
+  }
+
+  usernameInput.addEventListener('input', toggleButtonState);
+  passwordInput.addEventListener('input', toggleButtonState);
+
+  const row = document.querySelector('.row');
+
+  function applyKeyEffect() {
+  row.style.transition = 'border-color 0.3s ease, box-shadow 0.3s ease';
+  row.style.borderColor = '#0066FF';
+  row.style.boxShadow = '0 0 20px rgba(0, 102, 255, 0.8), 0 0 10px rgba(0, 102, 255, 0.1)';
+}
+
+function removeKeyEffect() {
+  row.style.borderColor = 'grey';
+  row.style.boxShadow = 'none';
+}
+
+function handleKeyPress() {
+  applyKeyEffect();
+}
+
+function handleKeyUp() {
+  setTimeout(removeKeyEffect, 200);
+}
+
+usernameInput.addEventListener('keydown', handleKeyPress);
+passwordInput.addEventListener('keydown', handleKeyPress);
+
+usernameInput.addEventListener('keyup', handleKeyUp);
+passwordInput.addEventListener('keyup', handleKeyUp);
+
+
+</script>
+
+{% endblock %}

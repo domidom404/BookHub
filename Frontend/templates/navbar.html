@@ -1,0 +1,213 @@
+{% load static %}
+
+<style>
+  /* --- VARIÁVEIS BOOKHUB DARK FANTASY --- */
+  :root {
+    --bh-red: #a41623;
+    --bh-red-dark: #7a121b;
+    --bh-bg: #18191a;
+    --bh-card: #1e1e24;
+    --bh-input: #2b2d31;
+    --bh-text: #e0e0e0;
+  }
+
+  * {
+    font-family: 'DM Sans', 'sans-serif';
+  }
+
+  /* Header Escuro */
+  header {
+    background-color: var(--bh-card) !important;
+    border-bottom: 1px solid #333;
+    color: var(--bh-text);
+  }
+
+  /* Links de Navegação (Home, About...) */
+  .nav-link {
+    color: var(--bh-text) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--bh-red) !important;
+  }
+
+  /* Barra de Pesquisa */
+  .form-control {
+    background-color: var(--bh-input) !important;
+    border: 1px solid #444;
+    color: #fff !important;
+  }
+
+  .form-control:focus {
+    border-color: var(--bh-red);
+    box-shadow: 0 0 5px rgba(164, 22, 35, 0.5);
+    outline: none;
+  }
+
+  .form-control::placeholder {
+    color: #888;
+  }
+
+  /* Botão da Lupa */
+  .btn-outline-primary {
+    color: var(--bh-red);
+    border-color: var(--bh-red);
+  }
+
+  .btn-outline-primary:hover {
+    background-color: var(--bh-red);
+    border-color: var(--bh-red);
+    color: white;
+  }
+
+  /* Botão "New Club" (Vermelho) */
+  .newclub-btn, .btn-primary {
+    background-color: var(--bh-red) !important;
+    border-color: var(--bh-red) !important;
+    color: white;
+    padding-top: .4rem;
+    padding-bottom: .4rem;
+    transition: all 0.3s ease;
+  }
+
+  .newclub-btn:hover {
+    background-color: var(--bh-red-dark) !important;
+    transform: translateY(-2px);
+  }
+
+  /* Dropdown do Perfil */
+  .btn-profile-div {
+    width: fit-content;
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+  
+  .btn-profile-div:hover, .btn-profile-div:focus {
+    border: none;
+    background: transparent;
+  }
+
+  .btn-profile-div img {
+    border: 2px solid var(--bh-red);
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .btn-profile-div img:hover {
+    transform: scale(1.1);
+  }
+
+  /* Menu Dropdown Escuro */
+  .dropdown-menu {
+    background-color: var(--bh-card);
+    border: 1px solid #444;
+  }
+
+  .dropdown-item {
+    color: var(--bh-text);
+  }
+
+  .dropdown-item:hover {
+    background-color: var(--bh-input);
+    color: var(--bh-red);
+  }
+
+  .dropdown-divider {
+    border-color: #444;
+  }
+
+  /* Botão Logout */
+  .logout-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 90%;
+    margin-left: 0.6rem;
+    background-color: transparent;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+  }
+  
+  .logout-btn:hover {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  /* Botões Login/Register (Estilo Outline Claro) */
+  .btn-light {
+    background-color: transparent;
+    color: var(--bh-text);
+    border: 1px solid #555;
+    margin-left: 0.5rem;
+    transition: all 0.3s;
+  }
+
+  .btn-light:hover {
+    background-color: transparent;
+    border-color: var(--bh-red);
+    color: var(--bh-red);
+  }
+
+  .text-end {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+  }
+</style>
+
+<header class="p-3 shadow-lg">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <ul class="nav nav-underline col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li class="nav-item"><a href="{% url 'pagina_principal' %}" class="nav-link px-2" name="home">Home</a></li>
+        <li class="nav-item"><a href="{% url 'about' %}" class="nav-link px-2 ">About</a></li>
+        {% if user.is_authenticated %}
+        {% csrf_token %}
+        <a class="nav-item nav-link px-2 " id="clubsLink" href=" {% url 'clubs' %}">Clubs</a>
+        
+        <form method="get" action="{% url 'lista_usuarios' %}" class="d-flex">
+          <div class="input-group">
+            <input type="text" name="nomes" class="form-control" placeholder="Search Bookheads"
+                   aria-label="Buscar Usuários" value="{{ request.GET.nomes }}">
+            <button class="btn btn-outline-primary" name="pesquisar" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        
+      </form>
+      
+
+        {% endif %}
+      </ul>
+
+      <div class="text-end">
+        {% if user.is_authenticated %}
+        <a class="btn bnt-sm btn-primary newclub-btn" href="{% url 'addClube' %}" id="novo_clube" style="font-weight: bold;">New Club</a>
+        <div class="btn-group btn-n-pfp">
+          <button type="button" class="btn dropdown-toggle btn-profile-div" data-bs-toggle="dropdown" aria-expanded="false" >
+            <img src="{% if user.profile.icone %}{% static user.profile.icone %}{% else %}{% static 'images/icon3.svg' %}{% endif %}" alt="foto de usuário" name="pfp" width="40rem">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" name="profiles" href="{% url 'profile' user_id=user.id %}">Profile</a></li>
+            <li><a class="dropdown-item" href=" {% url 'myclubes' %}">My Clubs</a></li>
+            <li><hr class="dropdown-divider"></li>
+          
+            <form method="post" action="{% url 'logout' %}" style="display:inline;" class="logout-btn-div">
+            {% csrf_token %}
+            <button class="btn btn-danger logout-btn" type="submit" id="logout-btn" name="logout-btn">Logout</button>
+            </form>
+          </ul>
+         
+        </div>
+        {% else %}
+        <a class="btn btn-light" href=" {% url 'register' %}">Register</a>
+        <a class="btn btn-light" href="{% url 'login' %}">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>
+

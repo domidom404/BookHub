@@ -1,0 +1,293 @@
+{% extends 'base2.html' %}
+{% load static %}
+
+{% block title %}
+Criar conta - BookHub
+{% endblock title %}
+
+{% block content %}
+<style>
+    /* --- VARIÁVEIS DO TEMA DARK FANTASY --- */
+    :root {
+        --bookhub-bg: #18191a;
+        --bookhub-card: #1e1e24;
+        --bookhub-red: #a41623;       /* Vermelho Vinho */
+        --bookhub-red-hover: #7a121b;
+        --bookhub-text: #e0e0e0;
+        --bookhub-input: #2b2d31;
+    }
+
+    body {
+        padding: 24px;
+        font-family: 'DM Sans', 'sans-serif';
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--bookhub-bg);
+        color: var(--bookhub-text);
+        overflow-x: hidden;
+    }
+
+    /* CONTAINER PRINCIPAL */
+    .container-div {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch; /* Garante que ambos os lados tenham a mesma altura */
+        width: 100%;
+        max-width: 950px;
+        min-height: 550px; /* Usei min-height para evitar cortes */
+        margin: auto;
+        background-color: var(--bookhub-card);
+        border: 1px solid #333;
+        border-radius: 2rem;
+        padding: 0;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    /* LADO ESQUERDO (VERMELHO) */
+    .characterholder {
+        background-color: var(--bookhub-red);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+        position: relative;
+        overflow: hidden;
+        /* Gradiente sutil para dar acabamento premium */
+        background: linear-gradient(135deg, #a41623 0%, #7a121b 100%);
+    }
+
+    /* LADO DIREITO (FORMULÁRIO) */
+    .holdallform {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 3rem; /* Mais espaço para o texto respirar */
+        box-sizing: border-box;
+        background-color: var(--bookhub-card);
+    }
+
+    /* TÍTULO (Correção do texto cortado) */
+    h1 {
+        color: #fff;
+        text-align: left;
+        margin-bottom: 1.5rem;
+        margin-top: 0;
+        /* Aumentei para 1.2 para não cortar partes das letras 'g', 'j', etc */
+        line-height: 1.2; 
+        font-size: 2.2rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* INPUTS */
+    .form-group { width: 100%; }
+
+    input.form-control {
+        background-color: var(--bookhub-input) !important;
+        border: 1px solid #444;
+        color: white !important;
+        border-radius: 8px;
+        padding: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    input.form-control:focus {
+        border-color: var(--bookhub-red);
+        box-shadow: 0 0 8px rgba(164, 22, 35, 0.4);
+        outline: none;
+    }
+
+    /* Remove fundo branco do autocomplete */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px var(--bookhub-input) inset !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    label {
+        font-weight: bold;
+        color: #bbb;
+        margin-bottom: 0.3rem;
+        font-size: 0.9rem;
+    }
+
+    /* BOTÃO */
+    .register-btn {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        font-family: 'DM Sans', 'sans-serif';
+        color: white;
+        background-color: var(--bookhub-red);
+        border: none;
+        cursor: pointer;
+        margin-top: 1.5rem;
+        transition: transform 0.2s, background-color 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .register-btn:hover {
+        background-color: var(--bookhub-red-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(164, 22, 35, 0.4);
+    }
+
+    /* LINKS */
+    .alr-registered {
+        font-family: 'DM Sans', 'sans-serif';
+        width: 100%;
+        text-align: center;
+        color: #888;
+        margin-top: 1.5rem;
+    }
+
+    .alr-registered a {
+        color: var(--bookhub-red) !important;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .alr-registered a:hover {
+        text-decoration: underline;
+        color: #ff5252 !important;
+    }
+
+    hr { border-color: #333; margin: 1.5rem 0; }
+
+    /* --- ANIMAÇÕES --- */
+    .personagem {
+        height: 75%;
+        width: auto;
+        z-index: 10;
+        position: relative;
+        /* Animação suave padrão */
+        animation: float 4s ease-in-out infinite;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* O selo de certificado */
+    .certified-bkh {
+        position: absolute;
+        height: 5rem;
+        width: auto;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 5;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 0.8;
+    }
+
+    /* Classes ativadas pelo JS */
+    .personagem.morph {
+        transform: scale(1.05);
+    }
+
+    .certified-bkh.active {
+        height: 9rem; /* Cresce */
+        transform: translate(-30%, -150%) rotate(-15deg); /* Sobe e gira */
+        opacity: 1;
+        filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 850px) {
+        .container-div {
+            flex-direction: column;
+            max-width: 100%;
+            border: none;
+            background: transparent;
+            box-shadow: none;
+        }
+        .characterholder { display: none; } /* Esconde boneco no mobile */
+        .holdallform {
+            width: 100%;
+            background-color: var(--bookhub-card);
+            border-radius: 1rem;
+            border: 1px solid #333;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        h1 { font-size: 1.8rem; text-align: center; }
+    }
+</style>
+
+<div class="container-div">
+    <div class="characterholder">
+        <img src="{% static 'images/boneco1.svg' %}" class="personagem" id="personagem-img">
+    </div>
+
+    <div class="holdallform">
+        <h1 class="fw-bold">Become a certified<br>bookhud right now</h1>
+        <div class="form-group p-2">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nome de Usuário:</label>
+                    <input type="text" id="username" name="username" class="form-control" required autocomplete="off">
+                </div>
+                <div class="mb-3">
+                    <label for="password1" class="form-label">Senha:</label>
+                    <input type="password" id="password1" name="password1" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password2" class="form-label">Confirme a Senha:</label>
+                    <input type="password" id="password2" name="password2" class="form-control" required>
+                </div>
+                <button class="register-btn" type="submit" name="registrar">CREATE ACCOUNT</button>
+            </form>
+            <hr>
+            <p class="alr-registered">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password1');
+    const passwordConfirmInput = document.getElementById('password2');
+    const personagemImg = document.getElementById('personagem-img');
+    const certifiedBkhImg = document.querySelector('.certified-bkh');
+
+    function checkInputs() {
+        // Verifica se há algo escrito na senha
+        const isPasswordFilled = passwordInput.value.length > 0;
+
+        if (isPasswordFilled) {
+            // Ativa o estado "Preenchido"
+            personagemImg.classList.add('morph');
+            // Troca a imagem para o boneco feliz (certifique-se que esta imagem existe)
+            personagemImg.src = "{% static 'images/personagem2.svg' %}";
+            
+            // Ativa a animação do selo via classe CSS (muito mais suave)
+            certifiedBkhImg.classList.add('active');
+        } else {
+            // Reseta para o estado inicial
+            personagemImg.classList.remove('morph');
+            personagemImg.src = "{% static 'images/boneco1.svg' %}";
+            certifiedBkhImg.classList.remove('active');
+        }
+    }
+
+    // Escuta eventos de digitação
+    usernameInput.addEventListener('input', checkInputs);
+    passwordInput.addEventListener('input', checkInputs);
+    // Também verifica quando sai do campo de confirmação
+    passwordConfirmInput.addEventListener('blur', checkInputs);
+</script>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home Page
+{% endblock title %}
+
+{% block content %}
+
+    {% if categoria_clube %}
+        <h1>Categoria: {{ cats }}</h1>
+        <ul>
+            {% for clube in categoria_clube %}
+            <li>
+                <a href="{% url 'club-Detail' clube.pk %}">{{ clube.titulo }}</a> - 
+                {{ clube.dataDeCriacao|date:"d/m/Y H:i" }} - 
+                {{ clube.moderador.first_name }}
+                {% if user.is_authenticated %}
+                {% if user.id == clube.moderador.id %}
+                    - <a href="{% url 'updateClube' clube.pk %}">Editar</a> - 
+                    <a href="{% url 'deleteClube' clube.pk %}">Deletar</a>
+                {% endif %}
+                {% endif %}
+                <p>{{ clube.descricao|slice:":200"|safe }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Esta categoria não existe!</h2>
+    {% endif %}
+{% endblock %}

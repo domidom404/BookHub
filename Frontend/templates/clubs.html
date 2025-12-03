@@ -1,0 +1,555 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block title %}
+    Home Page
+{% endblock title %}
+
+{% block content %}
+
+{% load static %}
+
+<style>
+    /* --- VARIÁVEIS DE TEMA BOOKHUB --- */
+    :root {
+        --bookhub-bg: #18191a;
+        --bookhub-card: #1e1e24;
+        --bookhub-red: #a41623;
+        --bookhub-red-hover: #7a121b;
+        --bookhub-text: #e0e0e0;
+        --bookhub-input: #2b2d31;
+    }
+
+    * {
+        font-family: 'DM Sans', 'sans-serif';
+    }
+
+    body {
+        background-color: var(--bookhub-bg);
+        color: var(--bookhub-text);
+    }
+
+    /* --- CARROSSEL --- */
+    #carousel {
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        transition: transform 0.3s ease;
+    }
+
+    li {
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .hold-evr {
+        margin-top: 2rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Botões de Navegação do Carrossel (Setinhas) */
+    .carousel-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: var(--bookhub-red); /* Vermelho */
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        padding: 10px;
+        z-index: 2;
+        transition: background-color 0.3s;
+    }
+
+    .carousel-button:hover {
+        background-color: var(--bookhub-red-hover);
+    }
+
+    #prev { left: 1rem; }
+    #next { right: 1rem; }
+
+    /* Imagem Principal do Topo */
+    .carousel-item {
+        height: 20rem;
+    }
+
+    .carousel-inner {
+        border-radius: 2rem;
+        border: 1px solid #333;
+    }
+
+    .carousel-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .item1 {
+        height: 100%;
+        width: 100%;
+        background-color: black;
+    }
+
+    /* --- TÍTULOS --- */
+    h1 {
+        font-size: 4rem;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    /* --- BARRA DE PESQUISA --- */
+    .search-container {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        margin-top: 20px;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .search-input {
+        flex: 1;
+        max-width: 600px;
+        padding: 10px;
+        border-radius: 25px 0 0 25px;
+        border: 1px solid #444;
+        background-color: var(--bookhub-input);
+        color: white;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--bookhub-red);
+    }
+
+    .search-btn {
+        padding: 10px 20px;
+        border-radius: 0 25px 25px 0;
+        border: 1px solid var(--bookhub-red);
+        background-color: var(--bookhub-red);
+        color: white;
+    }
+
+    .search-btn:hover {
+        background-color: var(--bookhub-red-hover);
+        border-color: var(--bookhub-red-hover);
+    }
+
+    /* Botão de Filtro (Funil) */
+    #botao-filtro {
+        background-color: var(--bookhub-red);
+        border-color: var(--bookhub-red);
+    }
+    
+    #botao-filtro:hover {
+        background-color: var(--bookhub-red-hover);
+    }
+
+    /* --- ÁREA DOS CARDS --- */
+    .cards-div {
+        display: flex;
+        padding: 2rem;
+        background-color: #25262b; /* Cinza escuro container */
+        border-radius: 1rem;
+        min-width: 20rem;
+        border: 1px solid #333;
+    }
+
+    .card {
+        width: 17rem;
+        height: 19rem;
+        background-color: var(--bookhub-card);
+        border: 1px solid #444; /* Borda sutil */
+        border-radius: 1rem;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: var(--bookhub-text);
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        height: 3rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .titles {
+        text-decoration: none;
+        font-size: 1.5rem; /* Ajustado para caber melhor */
+        font-weight: bold;
+        color: var(--bookhub-red); /* Títulos em vermelho */
+        transition: color 0.3s;
+    }
+
+    .titles:hover {
+        color: #ff5252;
+    }
+
+    .card-subtitle {
+        color: #aaa !important;
+    }
+
+    .genre-stars {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        margin-top: 0.5rem;
+    }
+
+    .date {
+        margin-top: -1rem;
+    }
+    
+    .badge.text-bg-primary {
+        background-color: #333 !important; /* Data com fundo cinza */
+        color: #ccc !important;
+        border: 1px solid #555;
+    }
+
+    .description-area {
+        flex-grow: 1;
+        height: 8.5rem; 
+        max-height: 11rem;
+        background-color: var(--bookhub-input); /* Área de texto escura */
+        padding: 0.3rem 0.8rem;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        border: 1px solid #333;
+        color: #bbb;
+    }
+
+    .card-text {
+        font-weight: normal;
+        margin: 0;
+        max-width: fit-content;
+    }
+
+    .div-stars {
+        width: fit-content;
+        font-size: 1.1rem;
+        display: flex;
+        color: #ffc107; /* Estrelas douradas */
+    }
+
+    /* --- FILTROS (CATEGORIAS) --- */
+    .collapse-body {
+        width: 100%;
+        height: fit-content;
+        background-color: var(--bookhub-card);
+        border: 1px solid #333;
+        color: white;
+    }
+
+    .categories-ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 0rem;
+        gap: 1rem;
+        padding: 0;
+    }
+
+    .category-btn {
+        border: 1px solid var(--bookhub-red); /* Borda vermelha */
+        border-radius: 2rem;
+        transition: background-color 0.3s, color 0.3s;
+        font-weight: 500;
+        width: 6rem;
+        background-color: transparent;
+        color: var(--bookhub-text);
+    }
+
+    .category-btn:hover {
+        background-color: var(--bookhub-red);
+        color: white;
+    }
+
+    .category-btn.active {
+        background-color: var(--bookhub-red);
+        color: white;
+        box-shadow: 0 0 10px rgba(164, 22, 35, 0.5);
+    }
+
+    #filter {
+        background-color: var(--bookhub-red) !important;
+        border-color: var(--bookhub-red) !important;
+        color: white;
+    }
+
+    /* Mensagem de "Nenhum clube encontrado" */
+    .no-clubs-message {
+        color: #aaa;
+        font-style: italic;
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media screen and (max-width: 650px) {
+        .search-input {
+            width: 80%;
+        }
+        .carousel-inner img {
+            object-fit: cover;
+        }
+        .categories-ul {
+            width: 100%;
+        }
+        .categories-li {
+            width: 100%;
+            box-sizing: border-box;
+            justify-content: space-around;
+        }
+        .category-btn {
+            width: 100%;
+            flex: 1 1;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+<div class="container my-5">
+    <h1>Clubs</h1>
+    <br>
+
+    <div id="carouselExampleAutoplaying" class="carousel slide img-carousel d-none d-md-block" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="item1">
+                    <img src="{% static 'images/hp.png' %}" class="d-block w-100 photo-carousel" alt="...">
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="d-flex justify-content-between modal-class">
+                    <img src="{% static 'images/duna.png' %}" class="d-block w-50 photo-carousel modal-class" alt="...">
+                    <img src="{% static 'images/romance.png' %}" class="d-block w-50 photo-carousel modal-class" alt="...">
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/agatha.png' %}" class="d-block w-100 photo-carousel" alt="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <br>
+    <hr>
+    <div>
+        <br>
+        <div>
+            <br>
+            <div class="search-bar-n-text">
+                <h2>Search for clubs made for you</h2>
+                <div class="search-container">
+                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" id="botao-filtro"
+                        aria-expanded="false" aria-controls="collapseExample" name="botao-filtro">
+                        <i class="bi bi-funnel-fill"></i>
+                    </a>
+                    <form method="get" class="d-flex">
+                        <input type="text" name="nome" class="form-control search-input" placeholder="Search Clubs"
+                            aria-label="Search Clubs" value="{{ request.GET.nome }}" id="pesquisa-barra">
+                        <button class="btn btn-outline-primary search-btn" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </div>
+                <p class="d-inline-flex gap-1">
+    
+                </p>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body collapse-body">
+                        <ul class="categories-ul">
+                            {% for categoria in cat_menu %}
+                            <li class="categories-li">
+                                <button type="button" class="btn btn-sm category-btn 
+                                    {% if categoria.nome == 'Ficção' %}categoria-ficção{% elif categoria.nome == 'Autoajuda' %}categoria-autoajuda{% elif categoria.nome == 'Tecnologia' %}categoria-tecnologia{% elif categoria.nome == 'Ciência' %}categoria-ciência{% elif categoria.nome == 'Mistério' %}categoria-mistério{% elif categoria.nome == 'Fantasia' %}categoria-fantasia{% elif categoria.nome == 'Romance' %}categoria-romance{% elif categoria.nome == 'História' %}categoria-historia{% elif categoria.nome == 'Biografia' %}categoria-biografia{% elif categoria.nome == 'Não-ficção' %}categoria-não-ficção{% endif %}" 
+                                    data-categoria="{{ categoria.nome }}"  
+                                    onclick="toggleCategorySelection('{{ categoria.nome }}')">
+                                    {{ categoria.nome }}
+                                </button>
+                            </li>  
+                            {% endfor %}
+                            <li class="btn btn-primary categories-li" style="border-radius: 2rem; font-weight: bold;" onclick="applyFilter()" id="filter">
+                                Filter <i class="bi bi-filter"></i>
+                            </li>
+                        </ul>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <div class="hold-evr">
+        <div class="cards-div">
+            <ul id="carousel" style="display: flex; padding: 0; margin: 0; list-style: none;">
+                {% for clube_context in clubes_context %}
+                    {% with clube=clube_context.clube %}
+                        <li>
+                            <div class="card shadow">
+                                <div class="card-body" data-bs-toggle="modal" data-bs-target="#clubeModal-{{ clube.id }}">
+                                    <h5 class="card-title">
+                                        <a class="titles" name="titles" href="#" data-bs-toggle="modal" data-bs-target="#clubeModal-{{ clube.id }}" name="entrar-btn">
+                                            {{ clube.titulo }}
+                                        </a>
+                                    </h5>
+                                    <div class="genre-stars">
+                                        <h6 class="card-subtitle mb-2 text-muted">{{ clube.categoria }}<i class="bi bi-dot"></i></h6>
+                                        <p class="div-stars">{% autoescape off %}{{ clube.estrelas_avaliacoes }}{% endautoescape %}</p>
+                                    </div>
+                                    <p class="date">
+                                        <span class="badge text-bg-primary">Since {{ clube.dataDeCriacao|date:"d/m/Y" }}</span>
+                                    </p>
+                                    <div class="description-area">
+                                        <p class="card-text text-break">{{ clube.descricao|cortar_texto:120|safe }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% endwith %}
+                {% endfor %}
+            </ul>
+    
+            {% if no_clubs_found %}
+                <div class="no-clubs-message text-center" style="width: 100%; text-align: center; padding: 20px;	">
+                    Nenhum clube corresponde aos filtros selecionados. Por favor, tente uma pesquisa diferente.
+                </div>
+            {% endif %}
+
+        
+        </div>
+    
+        <button id="prev" class="carousel-button">◀</button>
+        <button id="next" class="carousel-button">▶</button>
+        
+        {% for clube_context in clubes_context %}
+            {% with clube=clube_context.clube %}
+                {% include 'modal_clubs.html' %}
+            {% endwith %}
+        {% endfor %}
+    </div>
+     
+        <br><br>
+    
+
+
+<script>
+const cardWidth = 17; 
+const cardGap = 1; 
+const totalCards = document.querySelectorAll('.card').length;
+const cardsToShow = 4; 
+let currentIndex = 0;
+
+document.getElementById('next').addEventListener('click', () => {
+    currentIndex = Math.min(currentIndex + 1, totalCards - cardsToShow);
+    updateCarousel();
+});
+
+document.getElementById('prev').addEventListener('click', () => {
+    currentIndex = Math.max(currentIndex - 1, 0);
+    updateCarousel();
+});
+
+function updateCarousel() {
+    const offset = -currentIndex * (cardWidth + cardGap);
+    document.getElementById('carousel').style.transform = `translateX(${offset}rem)`;
+}
+
+let selectedCategories = new Set(); 
+
+function toggleCategorySelection(categoria) {
+    const button = document.querySelector(`button[data-categoria="${categoria}"]`);
+
+    if (selectedCategories.has(categoria)) {
+        selectedCategories.delete(categoria);  
+        button.classList.remove('active');     
+    } else {
+        selectedCategories.add(categoria);    
+        button.classList.add('active');       
+    }
+}
+
+function applyFilter() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('categoria');  
+
+    if (selectedCategories.size > 0) {
+        selectedCategories.forEach(cat => url.searchParams.append('categoria', cat));
+    }
+
+    window.location.href = url;
+}
+
+function resetSelectedCategoriesFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categorias = urlParams.getAll('categoria');
+
+    categorias.forEach(categoria => {
+        const button = document.querySelector(`button[data-categoria="${categoria}"]`);
+        if (button) {
+            selectedCategories.add(categoria);  
+            button.classList.add('active');      
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', resetSelectedCategoriesFromURL);
+
+window.addEventListener('load', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoriasSelecionadas = urlParams.getAll('categoria');
+
+    categoriasSelecionadas.forEach(categoria => {
+        const button = document.querySelector(`[data-categoria="${categoria}"]`);
+        if (button) {
+            button.classList.add('active');
+        }
+    });
+
+    checkVisibleClubs();
+});
+
+function checkVisibleClubs() {
+    const clubes = document.querySelectorAll('#carousel li');
+    let clubesVisiveis = 0;
+
+    clubes.forEach(clube => {
+        if (clube.style.display !== 'none') {
+            clubesVisiveis++;
+        }
+    });
+
+    const noClubsMessage = document.querySelector('.no-clubs-message');
+    if (clubesVisiveis === 0) {
+        if (noClubsMessage) {
+            noClubsMessage.style.display = 'block';
+        }
+    } else {
+        if (noClubsMessage) {
+            noClubsMessage.style.display = 'none';
+        }
+    }
+}
+
+
+
+</script>
+
+{% endblock %}

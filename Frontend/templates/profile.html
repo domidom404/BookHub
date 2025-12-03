@@ -1,0 +1,702 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* --- VARIÁVEIS GLOBAIS --- */
+    :root {
+        --bh-bg: #18191a;
+        --bh-card: #1e1e24;
+        --bh-card-light: #2b2d31;
+        --bh-red: #a41623;
+        --bh-red-hover: #7a121b;
+        --bh-gold: #f2ad00;
+        --bh-gold-dark: #e18b00;
+        --bh-text: #e0e0e0;
+        --bh-border: #444;
+    }
+
+    * {
+        font-family: 'DM Sans', 'sans-serif';
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: var(--bh-bg);
+        color: var(--bh-text);
+        overflow-x: hidden;
+    }
+
+    /* --- ESTRUTURA PRINCIPAL --- */
+    .superholder {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .hold {
+        width: 65%;
+        border-radius: 2rem;
+        order: 1;
+        background-color: var(--bh-card);
+        border: 1px solid #333;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        overflow: hidden;
+    }
+
+    .badges {
+        width: 30%;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        order: 2;
+        background-color: var(--bh-card);
+        color: var(--bh-text);
+        border: 1px solid #333;
+        height: fit-content;
+    }
+
+    /* --- BANNER --- */
+    .banner {
+        background: linear-gradient(135deg, var(--bh-red), var(--bh-red-hover));
+        height: 10rem;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end; /* Lápis na direita */
+        padding: 1.5rem;
+    }
+
+    .bi-pencil-fill {
+        background-color: rgba(0,0,0,0.3);
+        padding: 10px;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+        height: fit-content;
+    }
+    .bi-pencil-fill:hover { background-color: rgba(0,0,0,0.6); }
+
+    /* --- HEADER DO PERFIL (MAGIC GRID) --- */
+    /* Isso conserta o alinhamento e ordem dos elementos */
+    .img-user-div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: -5rem; /* Sobe a foto */
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* O Pulo do Gato: Ignora as divs pais para ordenar os filhos */
+    .img-user, .user-n-follow {
+        display: contents; 
+    }
+
+    /* 1. Foto de Perfil (Topo) */
+    .pfp-holder {
+        order: 1;
+        height: 9rem;
+        width: 9rem;
+        border-radius: 50%;
+        border: 6px solid var(--bh-card);
+        background-color: var(--bh-card);
+        object-fit: cover;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        margin-bottom: 0.5rem;
+        transition: filter 0.3s;
+    }
+    .pfp-holder:hover { filter: brightness(80%); }
+
+    /* 2. Nome de Usuário (Abaixo da foto) */
+    .username {
+        order: 2;
+        font-size: 2rem;
+        color: #fff;
+        font-weight: bold;
+        margin: 0;
+        width: 100%;
+    }
+
+    /* 3. Container para Stats (Seguidores) */
+    /* Como os stats são elementos soltos, estilizamos eles diretamente */
+    .img-user strong {
+        order: 3; /* Abaixo do nome */
+        display: inline-block;
+        font-size: 0.9rem;
+        color: #bbb; /* Cor clara para não sumir */
+        background-color: var(--bh-card-light);
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin: 5px;
+        cursor: pointer;
+        border: 1px solid #444;
+        transition: all 0.3s;
+    }
+    
+    .img-user strong:hover {
+        color: var(--bh-red);
+        border-color: var(--bh-red);
+    }
+
+    /* 4. Botão Follow (Fundo) */
+    .follow, #following-text {
+        order: 4;
+        margin-top: 1rem;
+    }
+
+    .follow {
+        background-color: var(--bh-red);
+        border: none;
+        border-radius: 2rem;
+        padding: 0.5rem 2rem;
+        color: white;
+        font-weight: bold;
+    }
+    .follow:hover { background-color: var(--bh-red-hover); transform: translateY(-2px); }
+
+    #following-text {
+        background: transparent;
+        border: 2px solid var(--bh-red);
+        color: var(--bh-red);
+        border-radius: 2rem;
+        padding: 0.4rem 1.8rem;
+        font-weight: bold;
+    }
+    #following-text:hover { background-color: var(--bh-red); color: white; }
+
+    /* --- RESTO DO CONTEÚDO --- */
+    .rest {
+        padding: 0 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .biodiv {
+        background-color: var(--bh-card-light);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: 1px solid #333;
+        color: #ccc;
+        margin-top: 1.5rem;
+        width: 100%;
+        max-width: 40rem;
+        text-align: center;
+    }
+    .bio { margin: 0; }
+
+    /* --- BADGES (Lateral) --- */
+    .badges-text {
+        font-weight: bold;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .badges-ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        justify-content: center;
+        padding: 0;
+        list-style: none;
+    }
+
+    .badges-li {
+        background-color: var(--bh-card-light);
+        border-radius: 0.5rem;
+        width: 4rem;
+        height: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #444;
+        color: #555;
+    }
+    .bi-dot { font-size: 2rem; }
+
+    /* --- MODAL EDIT PROFILE (Corrigido) --- */
+    .modal {
+        background-color: rgba(0, 0, 0, 0.85);
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background-color: var(--bh-card);
+        color: var(--bh-text);
+        border: 1px solid #444;
+        border-radius: 1rem;
+        width: 90%;
+        max-width: 500px;
+        padding: 2rem;
+        margin: 5% auto; /* Centraliza verticalmente melhor */
+        text-align: left;
+    }
+
+    .modaltitle-close {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #333;
+        padding-bottom: 1rem;
+    }
+
+    .close {
+        color: #aaa;
+        font-size: 2rem;
+        cursor: pointer;
+        line-height: 1;
+    }
+    .close:hover { color: var(--bh-red); }
+
+    /* Alinhamento do Form */
+    .bio-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .bio-form label {
+        color: #fff;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+    .bio-form textarea {
+        background-color: var(--bh-card-light);
+        border: 1px solid #444;
+        color: white;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        width: 100%;
+        min-height: 6rem;
+    }
+    .bio-form textarea:focus {
+        outline: none;
+        border-color: var(--bh-red);
+    }
+
+    /* Ícones Alinhados */
+    .icon-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        background-color: var(--bh-card-light);
+        padding: 1rem;
+        border-radius: 1rem;
+        border: 1px solid #333;
+    }
+
+    .icon img {
+        height: 3rem;
+        width: 3rem;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        transition: transform 0.2s;
+    }
+    .icon img:hover {
+        transform: scale(1.1);
+        border-color: var(--bh-red);
+    }
+
+    .save-bio {
+        background-color: var(--bh-red);
+        color: white;
+        width: 100%;
+        padding: 0.8rem;
+        font-weight: bold;
+        border-radius: 50px;
+        border: none;
+        margin-top: 1rem;
+    }
+    .save-bio:hover { background-color: var(--bh-red-hover); }
+
+    /* --- FAVORITOS (Mantido Dourado) --- */
+    .data-n-title { margin-top: 2rem; width: 100%; }
+    
+    .data-n-title h4 {
+        background-color: var(--bh-gold) !important;
+        color: #111 !important;
+        padding: 0.8rem;
+        border-radius: 0.5rem 0.5rem 0 0;
+        margin: 0;
+    }
+
+    .user-data {
+        background-color: var(--bh-card);
+        border: 1px solid #333;
+        padding: 1.5rem;
+        border-radius: 0 0 1rem 1rem;
+    }
+
+    .favoritosheader {
+        background-color: var(--bh-gold);
+        color: #111;
+        padding: 1rem;
+        font-weight: bold;
+        border-radius: 1rem;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 0 var(--bh-gold-dark);
+        text-decoration: none;
+        transition: transform 0.2s;
+    }
+    .favoritosheader:hover { transform: translateY(-2px); color: #000; }
+
+    #fav-date {
+        background-color: #111;
+        color: var(--bh-gold);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media screen and (max-width: 900px){
+        .superholder { flex-direction: column; }
+        .hold, .badges { width: 100%; order: unset; }
+        .badges { order: 2; margin-top: 1rem; }
+        .hold { order: 1; }
+    }
+</style>
+
+<div class="container my-5 superholder">
+    <!-- Essa div é para mostrar os badges do usuário -->
+    <div class="badges shadow-lg">
+        <p class="badges-text"><i class="bi bi-trophy-fill" style="color: #0066FF;"></i> Badges</p>
+        <hr>
+        <div class="badges-holder">
+            <ul class="badges-ul">
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+                <li class="badges-li">
+                    <div class="nobadge-holder">
+                        <i class="bi bi-dot"></i>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col hold shadow-lg">
+        <div class="banner">
+            {% if request.user == profile.user %}
+            <i class="bi bi-pencil-fill" name="pencil" onclick="openModal()" style="color: white; cursor: pointer;"></i>
+            {% endif %}
+        </div>
+        <div class="rest">
+            <div class="img-user-bio">
+                <div class="img-user-div">
+                    {% if request.user == profile.user %}
+                        <div class="img-user">
+                            <img src="{% if profile.icone %}{% static profile.icone %}{% else %}{% static 'images/icon3.svg' %}{% endif %}" alt="Foto de perfil" class="pfp-holder" name="foto"  onclick="openModal()">
+                            <strong style="cursor: pointer;" name="followers-text2" onclick="openFollowersModal()">{{ seguidores_count }} Followers</strong> <!-- Aqui tem que aparecer antes do 'Followers' o numero de followers -->
+                            
+                           
+                            <strong style="cursor: pointer;" name="seguindo" onclick="openFollowingModal()">{{ seguindo_count }} Following</strong>
+                        </div>
+                    {% else %}
+                        <div class="img-user">
+                            <img src="{% if profile.icone %}{% static profile.icone %}{% else %}{% static 'images/icon3.svg' %}{% endif %}" alt="Foto de perfil" class="pfp-holder">
+                            <strong style="cursor: pointer;" onclick="openFollowersModal()" id="followers-text2" name="followers-text2">{{ seguidores_count }} Followers</strong>  <!-- Aqui tem que aparecer antes do 'Followers' o numero de followers -->
+                            <strong style="cursor: pointer;" onclick="openFollowingModal()"  id="following-text2" name="seguindo">{{ seguindo_count }} Following</strong>
+                        </div>
+                    {% endif %}
+                    <div class="user-n-follow">
+                        <strong class="username" name="nomeexibir">@{{ profile.user.username }}</strong>
+                        {% if request.user != profile.user %}
+                            {% if request.user in profile.seguidores.all %}
+                           
+                            <form method="POST" action="{% url 'seguir_usuario' user_id=profile.user.id %}">
+                                {% csrf_token %}
+                                <button type="submit" span class="btn follow" id="following-text" name="unfollow">Unfollow <i class="bi bi-check"></i></span></button>
+                            </form>
+                        {% else %}
+                            <form method="POST" action="{% url 'seguir_usuario' user_id=profile.user.id %}">
+                                {% csrf_token %}
+                                <button type="submit" span class="btn follow" id="follow-text" name="follow">Follow<i class="bi bi-check"></i></span></button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                    </div>
+                    <div class="biodiv" data-bs-theme="dark">
+                        {% if request.user == profile.user %}
+                            {% if profile.bio %}
+                                <p class="text-break bio" name="bio_usuario">{{ profile.bio }}</p>
+                            {% else %}
+                                <p>Olá, sou um novo bookheaded</p>
+                            {% endif %}
+                        {% else %}
+                            {% if profile.bio %}
+                                <p class="bio">{{ profile.bio }}</p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="data-n-title">
+                <h4 style="padding: 0.5rem; background-color: #0066FF; color: white; margin: 0; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;"><strong>Favorite Clubs</strong></h4>
+                <div class="user-data">
+                    <ul class="N-favoritos-list">
+                        {% for clube in clubes_favoritos %}
+                            <li class="fav-list">
+                                <div class="favoritosheader">
+                                    {{ clube.titulo }} 
+                                    <div class="info-box">
+                                        <div class="date-rating">
+                                            <p class="rating">Rating: &nbsp;{% autoescape off %}{{ clube.estrelas_avaliacoes }}{% endautoescape %}</p> 
+                                            <p class="categoria"><span class="badge date" id="fav-date">{{ clube.categoria.nome }}</span></p>  <!-- Mudado de "Since" para "categoria" -->
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li style="color: black; list-style: none; font-weight: normal;">User has no favorite clubs yet.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+                      
+    </div>
+</div>
+
+<!-- mamed esse e o modal para alterar o perfil -->
+<div id="iconModal" class="modal" style="z-index: 999; ">
+    <div class="modal-content">
+        <span class="modaltitle-close">
+            <h2><strong>Edit Profile</strong></h2>
+            <span class="close">&times;</span>
+        </span>
+
+        <form class="bio-form" id="bio-form-modal" method="post" action="{% url 'profile' profile.user.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="icone" id="icone-input" value="{{ profile.icone }}">
+            <label style="width: fit-content; color: #494949; font-weight: 500;">Bio:</label>
+            <textarea name="bio" placeholder="Write your bio here...">{{ profile.bio }}</textarea>
+        
+        
+        <br>
+
+        <div class="icons-n-label">
+            <label style="width: fit-content; color: #494949; font-weight: 500;">Profile icon</label>
+            <div class="icon-options">
+                {% for icon in icons %}
+                <button type="button" class="icon" id="modal-icon" name="icone" onclick="chooseIcon('{{ icon }}')" style="border-style: none; border-radius: 100%;">
+                    <img src="{% static icon %}" alt="Ícone">
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <br>
+
+        <button class="btn btn-primary fw-bold save-bio" id="save-bio-modal" name="salvar" style="border-radius: 1rem;">Save Changes</button>
+        </form>
+        
+    </div>
+</div>
+
+<!-- mamemd esse e o modal para mostrar os perfis que te seguem seguidos -->
+<div id="followersModal" class="modal">
+    <div class="modal-content">
+        <span class="modaltitle-close">
+            <h2><strong>Followers</strong></h2>
+            <span class="close-followdata" onclick="closeFollowersModal()" >&times;</span>
+        </span>
+
+        <ul class="followdata-ul" style="list-style: none; padding: 0;">
+            {% for seguidor in seguidores %}
+            <li class="followdata-li">
+                <div class="img-user-followdata">
+                    <img src="{% if seguidor.profile.icone %}{% static seguidor.profile.icone %}{% else %}{% static 'images/icon3.svg' %}{% endif %}" alt="foto do perfil" style="height: 2rem;" name="fotodoperfil">
+                    <a href="{% url 'profile' seguidor.id %}" style="text-decoration: none;" name="foto_perfil">@{{ seguidor.username }}</a>
+
+                </div>
+            </li>
+            {% empty %}
+            <li>No followers found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div id="followingModal" class="modal" style="z-index: 999;">
+    <div class="modal-content">
+        <span class="modaltitle-close">
+            <h2><strong>Following</strong></h2>
+            <span class="close"  onclick="closeFollowingModal()">&times;</span>
+        </span>
+
+        <ul class="followdata-ul" style="list-style: none; padding: 0;">
+            {% for usuario in seguindo %}
+                <li class="followdata-li">
+                    <div class="img-user-followdata">
+                        <img src="{% if usuario.icone %}{% static usuario.icone %}{% else %}{% static 'images/icon3.svg' %}{% endif %}" alt="foto do perfil" style="height: 2rem;">
+                        <a href="{% url 'profile' usuario.user.id %}">@{{ usuario.user.username }}</a>
+                    </div> 
+                </li>
+            {% empty %}
+                <li>No followers found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+
+
+<script>
+   
+   function openModal() {
+    document.getElementById('iconModal').style.display = 'block';
+}
+
+document.querySelector('.close').addEventListener('click', function() {
+    document.getElementById('iconModal').style.display = 'none';
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('iconModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+};
+
+let selectedIcon = '';
+
+function chooseIcon(iconSrc) {
+    selectedIcon = iconSrc; 
+}
+
+document.querySelector('.bio-form').addEventListener('submit', function() {
+    if (selectedIcon) {
+        const newSrc = '{% get_static_prefix %}' + selectedIcon;
+        document.querySelector('.pfp-holder').src = newSrc; 
+        document.getElementById('icone-input').value = selectedIcon; 
+    }
+});
+
+function openFollowersModal() {
+    document.getElementById('followersModal').style.display = 'block';
+}
+
+function openFollowingModal() {
+    document.getElementById("followingModal").style.display = "block";
+}
+
+function closeFollowingModal() {
+    document.getElementById("followingModal").style.display = "none";
+}
+
+function closeFollowersModal() {
+    document.getElementById("followersModal").style.display = "none";
+}
+
+// Unificar o comportamento de clique fora dos modais
+window.onclick = function(event) {
+    const followingModal = document.getElementById("followingModal");
+    const followersModal = document.getElementById("followersModal");
+
+    // Fechar modal de Following
+    if (event.target == followingModal) {
+        closeFollowingModal();
+    }
+
+    // Fechar modal de Followers
+    if (event.target == followersModal) {
+        closeFollowersModal();
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.favoritosheader');
+
+    headers.forEach(header => {
+        header.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-bs-target');
+            const targetDiv = document.querySelector(targetId);
+            const caretIcon = this.querySelector('#caret-icon');
+
+            // Alterna a classe de exibição
+            targetDiv.classList.toggle('collapse');
+            caretIcon.classList.toggle('rotate');
+
+            // Muda a direção do ícone
+            if (targetDiv.classList.contains('collapse')) {
+                caretIcon.style.transform = 'rotate(0deg)';
+            } else {
+                caretIcon.style.transform = 'rotate(180deg)';
+            }
+        });
+    });
+});
+    
+</script>
+{% endblock %}

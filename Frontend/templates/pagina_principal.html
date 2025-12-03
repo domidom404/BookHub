@@ -1,0 +1,892 @@
+{% extends 'base3.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    /* --- CORES DO TEMA BOOKHUB --- */
+    :root {
+        --bh-bg: #18191a;        /* Fundo Principal */
+        --bh-footer: #1e1e24;    /* Fundo do Footer */
+        --bh-red: #a41623;       /* Vermelho Principal */
+        --bh-red-hover: #7a121b; /* Vermelho Escuro */
+        --bh-text: #e0e0e0;      /* Texto Claro */
+        --bh-text-muted: #aaa;   /* Texto Secundário */
+    }
+
+    body {
+        background-color: var(--bh-bg);
+        color: var(--bh-text);
+        font-family: 'DM Sans', 'sans-serif';
+        overflow-x: hidden; /* Evita rolagem lateral indesejada */
+    }
+
+    /* Botão Principal (Access Now) */
+    .startnow {
+        background-color: var(--bh-red);
+        color: white;
+        width: fit-content;
+        height: fit-content;
+        padding: 0.5rem 2rem;
+        font-weight: bold;
+        font-size: 2rem;
+        border-radius: 5rem;
+        margin-top: 2rem;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .startnow:hover {
+        background-color: var(--bh-red-hover);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(164, 22, 35, 0.4);
+        color: white;
+    }
+
+    main {
+        margin-top: 3rem;
+    }
+
+    .text-column {
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+    }
+
+    .main-100vh {
+        height: 90vh;
+    }
+
+    hr {
+        margin-top: 5.5rem;
+        border-color: #333;
+        opacity: 0.5;
+    }
+
+    .holdermainvh {
+        display: flexbox;
+        align-items: center;
+        flex-direction: row;
+        margin-top: 4rem;
+        justify-content: space-between;
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    .column1 {
+        height: fit-content;
+        max-width: 50%;
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        margin-top: -2rem;
+    }
+
+    /* Animações das Figuras */
+    .figurelp {
+        height: 30rem;
+        width: fit-content;
+        animation: floatAnimation2 6s infinite cubic-bezier(0.25, 0.1, 0.25, 1);
+        /* Filtro opcional caso as imagens sejam pretas e precisem ficar brancas */
+        /* filter: invert(1) brightness(2); */ 
+    }
+
+    .figure2lp {
+        height: 12rem;
+        margin-bottom: -11rem;
+        width: fit-content;
+        animation: floatAnimation 6s infinite cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .title {
+        font-weight: 600;
+        font-size: 4rem;
+        width: 32rem;
+        max-width: 100%;
+        line-height: 4rem;
+        text-align: left;
+        color: #fff; /* Título Branco */
+    }
+
+    /* Palavras destacadas no texto (antigo azul, agora vermelho) */
+    #bluestrong {
+        color: var(--bh-red) !important;
+    }
+    
+    strong[style*="color:#0066FF"] {
+        color: var(--bh-red) !important; /* Força mudança caso esteja inline no HTML */
+    }
+
+    .hold-btn-minitext {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .variosbonecos {
+        padding-top: 4rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .vantagens-bookheaded {
+        height: fit-content;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+        background-color: var(--bh-footer);
+        padding: 50px 0;
+        border-top: 1px solid #333;
+    }
+
+    .container-footer {
+        max-width: 1200px;
+        padding: 0 4%;
+        margin: 0 auto;
+    }
+
+    .row-footer {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .footer-col {
+        flex-basis: 25%;
+        padding: 10px;
+    }
+
+    .footer-col h4 {
+        font-size: 22px;
+        color: #fff; /* Títulos do footer brancos */
+        margin-bottom: 20px;
+        font-weight: bold;
+        position: relative;
+        text-transform: uppercase;
+    }
+
+    .footer-col ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-col ul li {
+        margin: 10px 0;
+    }
+
+    .footer-col ul li a {
+        font-size: 16px;
+        text-transform: capitalize;
+        color: var(--bh-text-muted); /* Links cinza */
+        text-decoration: none;
+        font-weight: 300;
+        display: block;
+        transition: all 0.3s ease;
+    }
+
+    .footer-col ul li a:hover {
+        color: var(--bh-red); /* Hover vermelho */
+        padding-left: 10px;
+    }
+
+    .footer-col .medias-socias {
+        margin-top: 30px;
+    }
+
+    .footer-col .medias-socias a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 40px;
+        margin: 0 10px 10px 0;
+        text-decoration: none;
+        border-radius: 50%;
+        color: #fff;
+        border: 1px solid #555;
+        transition: all 0.5s ease;
+    }
+
+    .footer-col .medias-socias a i {
+        font-size: 20px;
+    }
+
+    .footer-col .medias-socias a:hover {
+        background-color: var(--bh-red);
+        border-color: var(--bh-red);
+        color: white;
+    }
+
+    /* --- SEÇÕES INTERMEDIÁRIAS --- */
+    .segunda-section {
+        margin-top: 10rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        text-align: right;
+        align-items: center;
+        gap: 15rem;
+        flex-wrap: wrap;
+    }
+
+    .segunda-section-text {
+        width: 32rem;
+    }
+
+    h3 {
+        color: var(--bh-red); /* Títulos das seções em Vermelho */
+        font-size: 2.8rem;
+        font-weight: 900;
+    }
+
+    .segunda-section-figures {
+        height: fit-content;
+    }
+
+    .figure3lp {
+        height: 20rem;
+    }
+
+    .segunda-section2 {
+        margin-top: 10rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        text-align: left;
+        align-items: center;
+        gap: 10rem;
+        flex-wrap: wrap;
+        margin-bottom: 10rem;
+    }
+
+    .segunda-section2-text {
+        width: 32rem;
+    }
+
+    .segunda-section2-figures {
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .figure4lp {
+        height: 6rem;
+        filter: drop-shadow(0px .5rem 0px rgba(255, 255, 255, 0.1));
+    }
+
+    .figure4lp:hover {
+        filter: none;
+        transform: translateY(0.5rem);
+        cursor: pointer;
+    }
+
+    .figure5lp {
+        height: 6rem;
+        filter: drop-shadow(0px .5rem 0px rgba(124, 0, 0, 0.5));
+    }
+
+    .figure5lp:hover {
+        filter: none;
+        transform: translateY(0.5rem);
+        cursor: pointer;
+    }
+
+    .segunda-section3-figures {
+        height: fit-content;
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .figure6lp {
+        height: 20rem;
+    }
+
+    .figure7lp {
+        height: 2.5rem;
+        margin-top: 9rem;
+        margin-right: -2rem;
+        animation: otherfloatAnimation 3s infinite cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .figure8lp {
+        z-index: -1;
+        position: absolute;
+        height: 15rem;
+    }
+
+    .why-li {
+        list-style: none;
+        padding-left: 12px;
+        width: 100%;
+        margin: 10px 0 25px 0;
+        font-size: 24px;
+    }
+
+    li {
+        color: var(--bh-text);
+        display: flex;
+        align-items: center;
+    }
+
+    li img {
+        width: 64px;
+        margin-right: 20px;
+    }
+
+    .texto_aparece {
+        font-size: 4rem;
+        font-weight: bold;
+        line-height: 1.1;
+        color: #fff;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 5%;
+    }
+
+    .carousel-control-prev { left: 20px; }
+    .carousel-control-next { right: 20px; }
+
+    .carousel-item { height: 100%; }
+    .carousel-inner { border-radius: 1rem; }
+    .carousel-inner img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .carousel-caption {
+        position: absolute;
+        top: 20px;
+        left: 10%;
+        padding-left: 20px;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .carousel-caption h5 { font-size: 2.5rem; margin: 0; }
+    .carousel-caption p {
+        font-size: 5vw;
+        text-align: left;
+        line-height: 1;
+    }
+
+    #mini-carousel {
+        z-index: 20;
+        position: absolute;
+        bottom: 10px;
+        left: 74%;
+        transform: translateX(-50%);
+        display: flex;
+        overflow-x: hidden;
+    }
+
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.2s;
+        background-color: var(--bh-footer); /* Fundo dos cards escuro */
+        border: 1px solid #333;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        border-color: var(--bh-red);
+    }
+
+    .card img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        overflow: hidden;
+    }
+
+    /* --- KEYFRAMES --- */
+    @keyframes floatAnimation {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-2rem); }
+        100% { transform: translateY(0); }
+    }
+
+    @keyframes floatAnimation2 {
+        0% { transform: translateY(-2rem); }
+        50% { transform: translateY(0rem); }
+        100% { transform: translateY(-2rem); }
+    }
+
+    @keyframes otherfloatAnimation {
+        0% { transform: translateY(-1rem) rotate(-20deg); }
+        50% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(-1rem) rotate(-20deg); }
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 767px) {
+        .main-100vh {
+            height: fit-content;
+            margin-top: 0;
+        }
+
+        .text-column {
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .column1 { display: none; }
+
+        hr {
+            display: flex;
+            margin-top: 3rem;
+        }
+
+        .title {
+            font-size: 2rem;
+            line-height: 2rem;
+            margin-bottom: -0.5rem;
+            text-align: center;
+        }
+
+        .startnow {
+            height: 3rem;
+            width: 10rem;
+            font-size: 0.9rem;
+            display: flex; /* Centralizar texto no botão */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-100vh {
+            text-align: center;
+            height: fit-content;
+        }
+
+        .figures {
+            margin-top: 4rem;
+            border-radius: 0;
+        }
+
+        .footer-col ul {
+            flex-basis: 22%;
+            text-align: center;
+            padding: 0 !important;
+        }
+
+        .row-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-col {
+            width: 100%;
+            text-align: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .medias-socias { margin-top: 20px; }
+
+        #vantagens-bookheaded ul {
+            text-align: left;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #vantagens-bookheaded li {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        #vantagens-bookheaded img {
+            margin-right: 10px;
+            max-width: 30px;
+            height: auto;
+        }
+
+        #img-lado { display: none; }
+
+        h3 {
+            font-size: 20px;
+            margin: 20px;
+        }
+
+        li { font-size: 14px; }
+        li img { width: 32px; }
+
+        #texto-lateral {
+            background-color: #333 !important;
+            color: #fff !important;
+        }
+
+        #texto-lateral p { margin-bottom: 2rem; }
+
+        .texto_aparece {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.1;
+            min-height: 30px !important;
+            max-height: 30px !important;
+        }
+
+        #mini-carousel .card {
+            width: 60px;
+            height: auto;
+        }
+
+        #mini-carousel {
+            z-index: 20;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .segunda-section {
+            gap: 0rem;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .segunda-section-text {
+            width: 15rem;
+            order: 1;
+        }
+
+        .segunda-section-figures { display: none; }
+        .figure3lp { display: none; }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .footer-col ul {
+            flex-basis: 22%;
+            text-align: left;
+            padding: 10px !important;
+        }
+
+        .main-100vh {
+            height: fit-content;
+            align-self: center;
+        }
+
+        .title {
+            font-size: 2rem;
+            line-height: 2rem;
+            margin-bottom: -0.5rem;
+        }
+
+        .startnow {
+            height: 3rem;
+            width: 10rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .row-footer {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .footer-col {
+            flex-basis: 48%;
+            margin-bottom: 20px;
+        }
+
+        .medias-socias { margin-top: 20px; }
+
+        #vantagens-bookheaded ul {
+            text-align: left;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        #vantagens-bookheaded li {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        #vantagens-bookheaded img {
+            margin-right: 10px;
+            max-width: 30px;
+            height: auto;
+        }
+
+        .segunda_section { text-align: center; }
+        #img-lado { display: none; }
+
+        h3 {
+            font-size: 40px;
+            margin: 20px;
+        }
+
+        li img { width: 36px; }
+
+        #texto-lateral {
+            background-color: #333 !important;
+            color: white !important;
+        }
+
+        #texto-lateral p { font-size: 18px; }
+
+        .texto_aparece {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.1;
+            min-height: 40px !important;
+            max-height: 40px !important;
+        }
+
+        #mini-carousel .card {
+            width: 50px;
+            height: auto;
+        }
+
+        #mini-carousel {
+            z-index: 20;
+            position: absolute;
+            bottom: 20px;
+            left: 70%;
+            transform: translateX(-50%);
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .figure2lp { max-height: 6rem; }
+        .figurelp {
+            margin-top: 4rem;
+            max-height: 15rem;
+        }
+    }
+
+    @media (min-width: 1025px) {
+        .main-100vh { height: fit-content; }
+
+        .row-footer {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer-col {
+            flex-basis: 22%;
+            text-align: left;
+        }
+
+        .footer-col ul {
+            flex-basis: 22%;
+            text-align: left;
+            padding: 10px !important;
+        }
+
+        .texto_aparece {
+            font-size: 4rem;
+            font-weight: 600;
+            line-height: 1.1;
+            min-height: 80px !important;
+            max-height: 80px !important;
+        }
+
+        .segunda_section {
+            background-color: var(--bh-bg);
+            color: var(--bh-text);
+        }
+
+        #mini-carousel .card {
+            width: 100px;
+            height: auto;
+            border: 0px;
+            background: none;
+        }
+
+        #mini-carousel {
+            z-index: 20;
+            position: absolute;
+            bottom: 20px;
+            left: 70%;
+            transform: translateX(-50%);
+            overflow: hidden;
+            display: flex;
+        }
+    }
+</style>
+
+
+<body>
+    <main class="maincontainer container my-5">
+
+        <section class="container main-100vh">
+            <div class="row holdermainvh">
+                <span class="col-md-6 text-column">
+                    <p class="title">book clubs made <strong style="color:#0066FF;">better</strong> and
+                        <strong style="color:#0066FF;">easier</strong> to immerse in.
+                    </p>
+                    <button class="btn btn-primary startnow" href="{% url 'login' %}">Access Now</button>
+                </span>
+                <span class="col-md-6 column1">
+                    <img class="figure2lp" src="{% static 'images\meninacaindo.svg' %}">
+                    <img class="figurelp" src="{% static 'images\livroecaralp.svg' %}">
+                </span>
+            </div>
+        </section>
+
+        <section class="segunda-section">
+            <div class="segunda-section-figures">
+                <img class="figure3lp" src="{% static 'images\calendar2.svg' %}">
+            </div>
+            <div class="segunda-section-text">
+                <h3>Schedule and create reminders</h3>
+                <br>
+                <strong>With <strong id="bluestrong">bookhub</strong>, you have the power to <strong
+                        id="bluestrong">dynamize</strong> your book clubs agenda. Make it <strong
+                        id="bluestrong">easy</strong> for your clubs'
+                    integrants to aknowledge the current reading situation.</strong>
+            </div>
+        </section>
+        <section class="segunda-section2">
+            <div class="segunda-section2-text">
+                <h3>Improve your clubs' members management</h3>
+                <br>
+                <strong>It was <strong id="bluestrong">very hard</strong> to manage the members of book clubs before,
+                    but now, it is <strong id="bluestrong">as simple as pushing
+                        a button</strong>. You won't have problems in your club, as you'll have <strong
+                        id="bluestrong">insights</strong> of your club members and can easily remove integrants, invite
+                    and <strong id="bluestrong">much more</strong>.</strong>
+            </div>
+            <div class="segunda-section2-figures">
+                <img class="figure4lp" src="{% static 'images\wantstojoin.svg' %}">
+                <img class="figure5lp" src="{% static 'images\removedfromclub.svg' %}">
+            </div>
+        </section>
+        <section class="segunda-section">
+            <div class="segunda-section3-figures">
+                <img class="figure8lp" src="{% static 'images\falas.svg' %}">
+                <img class="figure7lp" src="{% static 'images\hand.svg' %}">
+                <img class="figure6lp" src="{% static 'images\meninosentado.svg' %}">
+            </div>
+            <div class="segunda-section-text">
+                <h3>Live Chatting</h3>
+                <br>
+                <strong>Here, you can <strong id="bluestrong">share your thoughts and enthusiasm</strong>, as you have
+                    <strong id="bluestrong">real-time chatting</strong> rooms, so you
+                    can discuss about the books you've read, or the chapters, or... everything. You're not only able to
+                    chat with your club-mates, but also with other people online.</strong>
+            </div>
+        </section>
+        <section class="segunda-section2">
+            <div class="segunda-section2-text">
+                <h3>Access to a huuuuge community</h3>
+                <br>
+                <strong>Make new friends to explore the literary world. <strong id="bluestrong">Create</strong> a club together. <strong id="bluestrong">Join</strong> clubs from other
+                    people interested in the same content as you. <strong id="bluestrong">See</strong> other bookheads profiles. </strong>
+            </div>
+            <div class="segunda-section2-figures">
+                <img class="figure3lp" src="{% static 'images\entrandonotelefone.svg' %}">
+            </div>
+        </section>
+
+        <footer>
+            <div class="container-footer">
+                <div class="row-footer">
+
+                    <div class="footer-col">
+                        <h4 style="margin-bottom: 0;">Bookheaded</h4>
+                        <ul>
+                            <li><a href="#"> Quem somos </a></li>
+                            <li><a href=""> Nossos serviços </a></li>
+                            <li><a href=""> Política de privacidade </a></li>
+                            <li><a href=""> Termos de aceite</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4 style="margin-bottom: 0;">Temas</h4>
+                        <ul>
+                            <li><a href="#">Terror</a></li>
+                            <li><a href="#">Mistério</a></li>
+                            <li><a href="#">Aventura</a></li>
+                            <li><a href="#">Romance</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4 style="margin-bottom: 0;">Modalidades</h4>
+                        <ul>
+                            <li><a href="#">Presencial</a></li>
+                            <li><a href="#">Online</a></li>
+                            <li><a href="#">Hibrido</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4 style="margin-bottom: 0;">Redes sociais</h4>
+                        <div class="medias-socias">
+                            <a href="#"> <i class="fab fa-facebook"></i> </a>
+                            <a href="#"> <i class="fab fa-instagram"></i> </a>
+                            <a href="#"> <i class="fab fa-twitter"></i> </a>
+                            <a href="#"> <i class="fab fa-linkedin"></i> </a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const text = "Meet our<br>main clubs";
+            let index = 0;
+            const speed = 30;
+            const typewriterElement = document.getElementById("typewriter");
+
+            function type() {
+                if (text.charAt(index) === "<") {
+                    const endIndex = text.indexOf(">", index);
+                    typewriterElement.innerHTML += text.substring(index, endIndex + 1);
+                    index = endIndex + 1;
+                } else {
+                    typewriterElement.innerHTML += text.charAt(index);
+                    index++;
+                }
+
+                if (index < text.length) {
+                    setTimeout(type, speed);
+                } else {
+                    blinkCursor();
+                }
+            }
+
+            function blinkCursor() {
+                typewriterElement.innerHTML += '<span id="cursor">_</span>';
+                setInterval(() => {
+                    const cursor = document.getElementById("cursor");
+                    if (cursor) {
+                        cursor.style.visibility = cursor.style.visibility === "hidden" ? "visible" : "hidden";
+                    }
+                }, 500);
+            }
+
+            type();
+        });
+    </script>
+
+</body>
+{% endblock %}

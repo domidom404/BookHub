@@ -1,0 +1,185 @@
+{% load static %}
+
+<style>
+  /* --- VARIÁVEIS DO TEMA BOOKHUB --- */
+  :root {
+    --bh-red: #a41623;
+    --bh-red-dark: #7a121b;
+    --bh-card: #1e1e24; /* Fundo do Header */
+    --bh-text: #e0e0e0; /* Texto Claro */
+  }
+
+  * {
+    font-family: 'DM Sans', 'sans-serif';
+  }
+
+  /* Header Escuro */
+  header {
+    background-color: var(--bh-card);
+    border-bottom: 1px solid #333;
+    color: var(--bh-text);
+  }
+
+  .nav-item {
+    text-decoration: none;
+  }
+
+  /* Links de Navegação */
+  .nav-link {
+    color: var(--bh-text) !important;
+    transition: color 0.3s ease;
+    font-weight: 500;
+  }
+
+  .nav-link:hover {
+    color: var(--bh-red) !important;
+  }
+
+  /* Botão New Club (Vermelho) */
+  .newclub-btn {
+    padding-top: .3rem;
+    background-color: var(--bh-red) !important;
+    border-color: var(--bh-red) !important;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .newclub-btn:hover {
+    background-color: var(--bh-red-dark) !important;
+    transform: translateY(-2px);
+  }
+
+  /* Dropdown do Perfil */
+  .btn-profile-div {
+    width: fit-content;
+    padding: 0rem;
+    background: transparent;
+    border: none;
+  }
+  
+  .btn-profile-div:hover, .btn-profile-div:focus {
+    background: transparent;
+    border: none;
+  }
+
+  .btn-profile-div img {
+    border: 2px solid var(--bh-red);
+    border-radius: 50%;
+  }
+
+  /* Menu Dropdown Escuro */
+  .dropdown-menu {
+    background-color: var(--bh-card);
+    border: 1px solid #444;
+  }
+
+  .dropdown-item {
+    color: var(--bh-text);
+  }
+
+  .dropdown-item:hover {
+    background-color: #2b2d31;
+    color: var(--bh-red);
+  }
+
+  .dropdown-divider {
+    border-color: #444;
+  }
+
+  /* Botão Logout */
+  .logout-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 90%;
+    margin-left: 0.6rem;
+    background-color: transparent;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+  }
+  
+  .logout-btn:hover {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  /* Botões Login/Register */
+  .login-register {
+    text-decoration: none;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s;
+  }
+
+  #register-btn {
+    background-color: var(--bh-red);
+    font-weight: bold;
+    color: white;
+    border: 1px solid var(--bh-red);
+  }
+
+  #register-btn:hover {
+    background-color: var(--bh-red-dark);
+    border-color: var(--bh-red-dark);
+  }
+
+  #login-btn {
+    background: transparent;
+    color: var(--bh-text);
+    border: 1px solid #555;
+    margin-left: 0.5rem;
+  }
+
+  #login-btn:hover {
+    background-color: transparent;
+    border-color: var(--bh-red);
+    color: var(--bh-red);
+  }
+
+  .text-end {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+  }
+
+</style>
+
+<header class="p-3">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <ul class="nav nav-underline col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li class="nav-item"><a href="{% url 'pagina_principal' %}" class="nav-link px-2" name="home">Home</a></li>
+        <li class="nav-item"><a href="{% url 'about' %}" class="nav-link px-2">About</a></li>
+        {% if user.is_authenticated %}
+        {% csrf_token %}
+        <a class="nav-item nav-link px-2" href=" {% url 'clubs' %}" id="abaclubs">Clubs</a>
+        {% endif %}
+      </ul>
+
+      <div class="text-end">
+        {% if user.is_authenticated %}
+        <a class="btn bnt-sm btn-primary newclub-btn" id="newclub-btn" href="{% url 'addClube' %}" style="font-weight: bold;">New Club</a>
+        <div class="btn-group btn-n-pfp">
+          <button type="button" class="btn dropdown-toggle btn-profile-div" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="{% if user.profile.icone %}{% static user.profile.icone %}{% else %}{% static 'images/icon3.svg' %}{% endif %}" alt="foto de usuário" name="pfp" width="40rem">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'profile' user_id=user.id %}" name="profiles">Profile</a></li>
+            <li><a class="dropdown-item" href=" {% url 'myclubes' %}" name="myclubs-btn">My Clubs</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <form method="post" action="{% url 'logout' %}" style="display:inline;" class="logout-btn-div">
+            {% csrf_token %}
+            <button class="btn btn-danger logout-btn" id="logout-btn"  name="logout-btn" type="submit">Logout</button>
+            </form>
+          </ul>
+        </div>
+        {% else %}
+        <a class="btn login-register" id="register-btn" href=" {% url 'register' %}">Register</a>
+        <a class="btn login-register" id="login-btn" href="{% url 'login' %}">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>
+
